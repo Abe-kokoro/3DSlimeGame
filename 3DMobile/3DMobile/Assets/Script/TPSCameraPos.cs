@@ -4,6 +4,7 @@ using UnityEngine;
 //using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class TPSCameraPos : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class TPSCameraPos : MonoBehaviour
     [SerializeField] private Vector2 TPSMouseMove;
     [SerializeField] private Slider ScreenSensiX;
     [SerializeField] private Slider ScreenSensiY;
+    [SerializeField] private GameObject SensiXText;
+    [SerializeField] private GameObject SensiYText;
 
     public static Vector2 MouseMove = Vector2.zero;
     private Vector3 pos = Vector3.zero;
@@ -38,6 +41,7 @@ public class TPSCameraPos : MonoBehaviour
     private int TapIndex = 0;
     private GUIStyle style;
     private int TouchCount;
+    Vector2 OldScreensensi;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +57,10 @@ public class TPSCameraPos : MonoBehaviour
     void Update()
     {
         Vector2 SetSensi = new Vector2(ScreenSensiX.value, ScreenSensiY.value);
+        
+       
+        OldScreensensi = new Vector2(ScreenSensiX.value,ScreenSensiY.value);
+       
         SetScreenSensi(SetSensi/50);
         SetMouseSensi(SetSensi/5);
         if (GameObject.FindGameObjectWithTag("Player"))
