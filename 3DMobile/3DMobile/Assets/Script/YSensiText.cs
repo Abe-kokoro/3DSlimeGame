@@ -22,7 +22,7 @@ public class YSensiText : MonoBehaviour
             Slider = GameObject.FindObjectOfType<Slider>();
         }
         //var Label = GetComponent<TextMeshPro>();
-        TextValue.text = "X:" + Slider.value;
+        TextValue.text = "Y:" + Slider.value;
 
     }
 }
