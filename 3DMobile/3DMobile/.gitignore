@@ -59,3 +59,5 @@ sysinfo.txt
 crashlytics-build.properties
 #2022/12/15 自分で追加、フォントファイルをバージョン管理しない
 Fonts
+#2022/12/23追加
+models
