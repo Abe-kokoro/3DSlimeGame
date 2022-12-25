@@ -13,11 +13,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [SerializeField] Slider PlayerHPSlider;
     int PlayerCurrentHp;
     int PlayerMaxHp;
+    
     void Start()
     {
         //DashButton.GetComponent<Button>().onClick.AddListener(Dash);
         JumpButton.GetComponent<Button>().onClick.AddListener(Jump);
         AttackButton.GetComponent<Button>().onClick.AddListener(Attack);
+        
     }
 
     // Update is called once per frame
