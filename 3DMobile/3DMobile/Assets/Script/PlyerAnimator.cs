@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 public class PlyerAnimator : MonoBehaviour
 {
     Animator animator = null;
@@ -13,6 +14,9 @@ public class PlyerAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-     
+        if(Input.GetMouseButtonDown(0))
+        {
+            animator.SetTrigger("isAttack");
+        }
     }
 }
