@@ -13,7 +13,7 @@ public class Player2 : MonoBehaviourPunCallbacks
     [SerializeField] private float PlayerMove;
     [SerializeField] private Vector2 JoystickValue;
     [SerializeField] private GameObject TPSCamera;
-    private bool PlayerMoveFlg = false;
+    [SerializeField] private bool PlayerMoveFlg = false;
     private Rigidbody RB;
     public bool AttackFlg = false;
     public bool JumpFlg = false;
@@ -27,14 +27,20 @@ public class Player2 : MonoBehaviourPunCallbacks
     [SerializeField] private float PlayerRotateVar = 0.0f;
     private Vector3 FixedAngle;
     // Start is called before the first frame update
+    //[SerializeField] bool isWalk = false;
+    // アニメーター
+    Animator animator = null;
+    bool isDash = false;
     [SerializeField] bool OnField = false;
     void Start()
     {
         joystick = FindObjectOfType<Joystick>();
         RB = this.GetComponent<Rigidbody>();
         TPSCamera = GameObject.FindGameObjectWithTag("Camera");
+        animator = GetComponent<Animator>();
+
     }
-    
+
     private void FixedUpdate()
     {
               transform.eulerAngles += FixedAngle;
@@ -109,24 +115,44 @@ public class Player2 : MonoBehaviourPunCallbacks
             }
             float step = 0;
             step = RotateSpeed * Time.deltaTime;
-
+             if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            DashFlg = true;
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            DashFlg = false;
+        }
+        if (this.GetComponent<PlyerAnimator>().GetAttackAnim()==false)
+        {
             if (PlayerMoveFlg)
             {
                 if (DashFlg)
                 {
                     transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
+                    //isDash = true;
                 }
                 else
                 {
                     if (Input.GetKey(KeyCode.LeftShift))
                     {
                         transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
+                        //isDash = true;
+                    }
+                    else
+                    {
+                        //isDash = false;   
                     }
                     transform.position += transform.forward * PlayerMove * Time.deltaTime;
                 }
                 //transform.rotation = Quaternion.RotateTowards(transform.rotation, PlayerDirect.transform.rotation, 1);
 
             }
+        }
+        else
+        {
+            //isDash = false;
+        }
 
 
 
@@ -195,9 +221,27 @@ public class Player2 : MonoBehaviourPunCallbacks
             {
             FixedAngle = new Vector3(0, 0, 0);
             }
-            
-            
+            if(PlayerMoveFlg)
+        {
+            animator.SetBool("isWalk", true);
+            if (DashFlg)
+            {
+                animator.SetBool("isRun", true);
+
+            }
+            else
+            {
+                animator.SetBool("isRun", false);
+
+            }
+        }
+        else
+        {
+            animator.SetBool("isWalk", false);
+            animator.SetBool("isRun", false);
+        }
         
+
     }
     float GetAngle(Vector2 start, Vector2 target)
     {
