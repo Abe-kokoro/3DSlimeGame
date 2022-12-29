@@ -13,7 +13,7 @@ public class PlyerAnimator : MonoBehaviour
     // リジッドボディ
     Rigidbody rigid = null;
     //! 攻撃アニメーション中フラグ.
-    bool isAttack = false;
+    public bool isAttack = false;
     // 設置判定用ColliderCall.
     [SerializeField] ColliderCallReceiver footColliderCall = null;
     // 接地フラグ.
@@ -101,5 +101,9 @@ public class PlyerAnimator : MonoBehaviour
             isGround = false;
             animator.SetBool("isGround", false);
         }
+    }
+    public bool GetAttackAnim()
+    {
+        return isAttack;
     }
 }
