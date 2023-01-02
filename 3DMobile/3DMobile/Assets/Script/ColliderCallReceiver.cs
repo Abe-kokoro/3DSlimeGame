@@ -18,6 +18,7 @@ public class ColliderCallReceiver : MonoBehaviour
     // トリガーイグジットイベント.
     public TriggerEvent TriggerExitEvent = new TriggerEvent();
 
+
     void Start()
     {
 

@@ -33,17 +33,19 @@ public class PlayerController : MonoBehaviourPunCallbacks
             if (!MinePlayer)
             {
                 MinePlayer = GameObject.FindGameObjectWithTag("Player");
-                if (!MinePlayer.GetComponent<Player>().photonView.IsMine)
-                {
-                    MinePlayer = null;
-                }
+                //マルチまで
+                //if (!MinePlayer.GetComponent<Player>().photonView.IsMine)
+                //{
+                //    MinePlayer = null;
+                //}
             }
         }
         if(MinePlayer)
         {
-            PlayerCurrentHp=MinePlayer.GetComponent<PlayerHpBar>().GetPlayerHP();
-            PlayerMaxHp = MinePlayer.GetComponent<PlayerHpBar>().GetMaxPlayerHP();
-            PlayerHPSlider.value = (float)PlayerCurrentHp / (float)PlayerMaxHp;
+            //マルチまで
+           // PlayerCurrentHp=MinePlayer.GetComponent<PlayerHpBar>().GetPlayerHP();
+           // PlayerMaxHp = MinePlayer.GetComponent<PlayerHpBar>().GetMaxPlayerHP();
+           // PlayerHPSlider.value = (float)PlayerCurrentHp / (float)PlayerMaxHp;
         }
     }
     public void DClicked()
