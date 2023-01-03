@@ -147,4 +147,33 @@ public class PlyerAnimator : MonoBehaviour
     {
         return isAttack;
     }
+    // ---------------------------------------------------------------------
+    /// <summary>
+    /// 敵の攻撃がヒットしたときの処理.
+    /// </summary>
+    /// <param name="damage"> 食らったダメージ. </param>
+    // ---------------------------------------------------------------------
+    public void OnEnemyAttackHit(int damage)
+    {
+        CurrentStatus.Hp -= damage;
+
+        if (CurrentStatus.Hp <= 0)
+        {
+            OnDie();
+        }
+        else
+        {
+            Debug.Log(damage + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    /// <summary>
+    /// 死亡時処理.
+    /// </summary>
+    // ---------------------------------------------------------------------
+    void OnDie()
+    {
+        Debug.Log("死亡しました。");
+    }
 }
