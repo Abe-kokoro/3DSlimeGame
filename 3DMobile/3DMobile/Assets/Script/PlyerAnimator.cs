@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class PlyerAnimator : MonoBehaviour
+using UnityEngine.UI;
+using Photon.Pun;
+public class PlyerAnimator : MonoBehaviourPunCallbacks
 {
     // -------------------------------------------------------
     /// <summary>
@@ -17,6 +20,8 @@ public class PlyerAnimator : MonoBehaviour
         // 攻撃力.
         public int Power = 1;
     }
+    //HPBar slider
+    public Slider HPslider;
 
     // 攻撃HitオブジェクトのColliderCall.
     [SerializeField] ColliderCallReceiver attackHitCall = null;
@@ -39,7 +44,7 @@ public class PlyerAnimator : MonoBehaviour
     [SerializeField] ColliderCallReceiver footColliderCall = null;
     // 接地フラグ.
     bool isGround = false;
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -54,20 +59,24 @@ public class PlyerAnimator : MonoBehaviour
         // 現在のステータスの初期化.
         CurrentStatus.Hp = DefaultStatus.Hp;
         CurrentStatus.Power = DefaultStatus.Power;
+        HPslider.value = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (photonView.IsMine)
         {
-            AttackAction();
-        }
-        if (Input.GetKeyDown("space"))
-        {
-            if (isGround == true)
+            if (Input.GetMouseButtonDown(0))
             {
-                JumpAction();
+                AttackAction();
+            }
+            if (Input.GetKeyDown("space"))
+            {
+                if (isGround == true)
+                {
+                    JumpAction();
+                }
             }
         }
     }
@@ -155,18 +164,35 @@ public class PlyerAnimator : MonoBehaviour
     // ---------------------------------------------------------------------
     public void OnEnemyAttackHit(int damage)
     {
-        CurrentStatus.Hp -= damage;
-
+        //CurrentStatus.Hp -= damage;
+        AddPlayerDamage(damage);
         if (CurrentStatus.Hp <= 0)
         {
             OnDie();
         }
         else
         {
-            Debug.Log(damage + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
+            //Debug.Log(damage + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
         }
     }
+    public void AddPlayerDamage(int dmg)
+    {
+        CurrentStatus.Hp -= dmg;
+        Debug.Log(dmg + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
+        HPslider.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
 
+    }
+    public void AddPlayerHP(int HealValue)
+    {
+        CurrentStatus.Hp += HealValue;
+        if(CurrentStatus.Hp>DefaultStatus.Hp)
+        {
+            CurrentStatus.Hp = DefaultStatus.Hp;
+        }
+        Debug.Log("HPを"+HealValue + "回復した!!残りHP" + CurrentStatus.Hp);
+        HPslider.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
+
+    }
     // ---------------------------------------------------------------------
     /// <summary>
     /// 死亡時処理.
@@ -175,5 +201,10 @@ public class PlyerAnimator : MonoBehaviour
     void OnDie()
     {
         Debug.Log("死亡しました。");
+    }
+    public Vector2 GetPlayerHP()
+    {
+        Vector2 HPStatus = new Vector2(CurrentStatus.Hp, DefaultStatus.Hp);
+        return HPStatus;
     }
 }

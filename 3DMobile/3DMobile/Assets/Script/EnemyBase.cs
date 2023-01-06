@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyBase : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] ColliderCallReceiver attackHitColliderCall = null;
     // 攻撃間隔.
     [SerializeField] float attackInterval = 3f;
+    //敵キャラクターHPバー
+    [SerializeField] Slider EnemyHPBar;
     // アニメーター.
     Animator animator = null;
     // ----------------------------------------------------------
@@ -52,6 +55,7 @@ public class EnemyBase : MonoBehaviour
     }
     void Update()
     {
+        EnemyHPBar.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
         // 攻撃できる状態の時.
         if (isBattle == true)
         {

@@ -48,6 +48,8 @@ public class Player2 : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
+        if (photonView.IsMine)
+        {
             if (Input.GetKeyDown("m"))
             {
                 MouseFlg = !MouseFlg;
@@ -115,44 +117,44 @@ public class Player2 : MonoBehaviourPunCallbacks
             }
             float step = 0;
             step = RotateSpeed * Time.deltaTime;
-             if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            DashFlg = true;
-        }
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            DashFlg = false;
-        }
-        if (this.GetComponent<PlyerAnimator>().GetAttackAnim()==false)
-        {
-            if (PlayerMoveFlg)
+            if (Input.GetKeyDown(KeyCode.LeftShift))
             {
-                if (DashFlg)
+                DashFlg = true;
+            }
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                DashFlg = false;
+            }
+            if (this.GetComponent<PlyerAnimator>().GetAttackAnim() == false)
+            {
+                if (PlayerMoveFlg)
                 {
-                    transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
-                    //isDash = true;
-                }
-                else
-                {
-                    if (Input.GetKey(KeyCode.LeftShift))
+                    if (DashFlg)
                     {
                         transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
                         //isDash = true;
                     }
                     else
                     {
-                        //isDash = false;   
+                        if (Input.GetKey(KeyCode.LeftShift))
+                        {
+                            transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
+                            //isDash = true;
+                        }
+                        else
+                        {
+                            //isDash = false;   
+                        }
+                        transform.position += transform.forward * PlayerMove * Time.deltaTime;
                     }
-                    transform.position += transform.forward * PlayerMove * Time.deltaTime;
-                }
-                //transform.rotation = Quaternion.RotateTowards(transform.rotation, PlayerDirect.transform.rotation, 1);
+                    //transform.rotation = Quaternion.RotateTowards(transform.rotation, PlayerDirect.transform.rotation, 1);
 
+                }
             }
-        }
-        else
-        {
-            //isDash = false;
-        }
+            else
+            {
+                //isDash = false;
+            }
 
 
 
@@ -217,31 +219,31 @@ public class Player2 : MonoBehaviourPunCallbacks
                 FixedAngle = new Vector3(0, -PlayerRotateVar * 0.1f, 0);
                 //transform.eulerAngles += FixedAngle;
             }
-            if(!PlayerMoveFlg)
+            if (!PlayerMoveFlg)
             {
-            FixedAngle = new Vector3(0, 0, 0);
+                FixedAngle = new Vector3(0, 0, 0);
             }
-            if(PlayerMoveFlg)
-        {
-            animator.SetBool("isWalk", true);
-            if (DashFlg)
+            if (PlayerMoveFlg)
             {
-                animator.SetBool("isRun", true);
+                animator.SetBool("isWalk", true);
+                if (DashFlg)
+                {
+                    animator.SetBool("isRun", true);
 
+                }
+                else
+                {
+                    animator.SetBool("isRun", false);
+
+                }
             }
             else
             {
+                animator.SetBool("isWalk", false);
                 animator.SetBool("isRun", false);
-
             }
-        }
-        else
-        {
-            animator.SetBool("isWalk", false);
-            animator.SetBool("isRun", false);
-        }
-        
 
+        }
     }
     float GetAngle(Vector2 start, Vector2 target)
     {

@@ -37,5 +37,7 @@ public class GameController : MonoBehaviourPunCallbacks
         var position = new Vector3(Random.Range(-3.0f, 3.0f), 0.0f, Random.Range(-3.0f, 3.0f));
         //マルチプレイ実装まではコメントアウト
         //PhotonNetwork.Instantiate("Avator",position,Quaternion.identity);
+        PhotonNetwork.Instantiate("Player",position,Quaternion.identity);
+
     }
 }
