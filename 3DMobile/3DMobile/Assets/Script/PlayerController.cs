@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using TMPro;
 public class PlayerController : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
@@ -11,8 +12,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [SerializeField] GameObject JumpButton;
     [SerializeField] GameObject AttackButton;
     [SerializeField] Slider PlayerHPSlider;
-    int PlayerCurrentHp;
-    int PlayerMaxHp;
+    
+    float PlayerCurrentHp;
+    float PlayerMaxHp;
     
     void Start()
     {
@@ -25,9 +27,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        //PlayerCurrentHp=MinePlayer.GetComponent<PlayerHpBar>().GetPlayerHP();
-        //PlayerMaxHp = MinePlayer.GetComponent<PlayerHpBar>().GetMaxPlayerHP();
-        //PlayerHPSlider.value = (float)PlayerCurrentHp / (float)PlayerMaxHp;
+        
         if (GameObject.FindGameObjectWithTag("Player"))
         {
             if (!MinePlayer)
@@ -42,10 +42,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
         if(MinePlayer)
         {
+           
+
+            PlayerCurrentHp = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerHP().x;
+            PlayerMaxHp = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerHP().y;
+            PlayerHPSlider.value = PlayerCurrentHp / PlayerMaxHp;
             //ƒ}ƒ‹ƒ`‚Ü‚Å
-           // PlayerCurrentHp=MinePlayer.GetComponent<PlayerHpBar>().GetPlayerHP();
-           // PlayerMaxHp = MinePlayer.GetComponent<PlayerHpBar>().GetMaxPlayerHP();
-           // PlayerHPSlider.value = (float)PlayerCurrentHp / (float)PlayerMaxHp;
+            // PlayerCurrentHp=MinePlayer.GetComponent<PlayerHpBar>().GetPlayerHP();
+            // PlayerMaxHp = MinePlayer.GetComponent<PlayerHpBar>().GetMaxPlayerHP();
+            // PlayerHPSlider.value = (float)PlayerCurrentHp / (float)PlayerMaxHp;
         }
     }
     public void DClicked()
@@ -64,4 +69,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         MinePlayer.GetComponent<Player>().JumpClicked();
     }
+    public float GetPlayerCurrentHP()
+    {
+        return PlayerCurrentHp;
+    }
+    public float GetPlayerMaxHP()
+    {
+        return PlayerMaxHp;
+    }
+
 }
