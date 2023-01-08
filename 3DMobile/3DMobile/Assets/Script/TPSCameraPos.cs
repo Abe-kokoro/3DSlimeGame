@@ -149,7 +149,7 @@ public class TPSCameraPos : MonoBehaviour
                 //  if (Screen.width / 2 < Input.mousePosition.x && Input.GetMouseButton(0))
                 //      if(0<Input.mousePosition.x)
 
-                TPSCameraDistance = Mathf.Clamp(TPSCameraDistance, 4.0f, 8);
+                TPSCameraDistance = Mathf.Clamp(TPSCameraDistance, 4.0f, 12);
                 MouseMove.y = Mathf.Clamp(MouseMove.y, -0.4f + 0.5f, 0.4f + 0.5f);
                 //MouseMove += new Vector2(Input.GetAxis("Mouse X")*FPSMouseSensi, Input.GetAxis("Mouse Y")*FPSMouseSensi);
                 // ‹…–ÊÀ•WŒn•ÏŠ·

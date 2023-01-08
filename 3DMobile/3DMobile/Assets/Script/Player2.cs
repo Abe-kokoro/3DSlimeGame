@@ -14,6 +14,7 @@ public class Player2 : MonoBehaviourPunCallbacks
     [SerializeField] private Vector2 JoystickValue;
     [SerializeField] private GameObject TPSCamera;
     [SerializeField] private bool PlayerMoveFlg = false;
+    [SerializeField] GameObject Sword;
     private Rigidbody RB;
     public bool AttackFlg = false;
     public bool JumpFlg = false;
@@ -125,7 +126,7 @@ public class Player2 : MonoBehaviourPunCallbacks
             {
                 DashFlg = false;
             }
-            if (this.GetComponent<PlyerAnimator>().GetAttackAnim() == false)
+            if (this.GetComponent<PlyerAnimator>().GetPlayerisAttacking() == false)
             {
                 if (PlayerMoveFlg)
                 {
@@ -223,18 +224,19 @@ public class Player2 : MonoBehaviourPunCallbacks
             {
                 FixedAngle = new Vector3(0, 0, 0);
             }
+            Sword.SetActive(true);
             if (PlayerMoveFlg)
             {
                 animator.SetBool("isWalk", true);
                 if (DashFlg)
                 {
                     animator.SetBool("isRun", true);
-
+                    Sword.SetActive(false);
                 }
                 else
                 {
                     animator.SetBool("isRun", false);
-
+                   
                 }
             }
             else
@@ -242,6 +244,7 @@ public class Player2 : MonoBehaviourPunCallbacks
                 animator.SetBool("isWalk", false);
                 animator.SetBool("isRun", false);
             }
+            
 
         }
     }

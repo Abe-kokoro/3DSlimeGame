@@ -85,7 +85,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     /// </summary>
     /// <param name="damage"> 食らったダメージ. </param>
     // ----------------------------------------------------------
-    public void OnAttackHit(int damage)
+    public void OnAttackHit(int damage,int dmgLevel)
     {
         CurrentStatus.Hp -= damage;
         Debug.Log("Hit Damage " + damage + "/CurrentHp = " + CurrentStatus.Hp);
@@ -94,9 +94,17 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         {
             OnDie();
         }
-        else
+        else if(dmgLevel == 1)
+        {
+            animator.SetTrigger("isHit00");
+        }
+        else if(dmgLevel == 2)
         {
             animator.SetTrigger("isHit01");
+        }
+        else if (dmgLevel == 3)
+        {
+            animator.SetTrigger("isHit02");
         }
     }
 
@@ -119,7 +127,10 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     void Anim_Hit02End()
     {
         //this.gameObject.SetActive(false);
-        CurrentStatus.isAlive = false;
+        if (CurrentStatus.Hp <= 0)
+        {
+            CurrentStatus.isAlive = false;
+        }
     }
     // ------------------------------------------------------------
     /// <summary>

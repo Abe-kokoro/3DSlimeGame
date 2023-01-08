@@ -1053,7 +1053,7 @@ PrefabInstance:
     - target: {fileID: 8063844186370862173, guid: 16e7451e81164bc4caac73768f16ceb6,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8703019995518444202, guid: 16e7451e81164bc4caac73768f16ceb6,
         type: 3}
@@ -1062,6 +1062,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16e7451e81164bc4caac73768f16ceb6, type: 3}
+--- !u!1 &5150581223861340889 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3267553789834706453, guid: 16e7451e81164bc4caac73768f16ceb6,
+    type: 3}
+  m_PrefabInstance: {fileID: 7647715290282292428}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7648587338929658550 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1997953001238138, guid: 16e7451e81164bc4caac73768f16ceb6,
@@ -1083,10 +1089,20 @@ MonoBehaviour:
   HPslider: {fileID: 1665405420}
   Attack1particle: {fileID: 198741542255655676, guid: d22a68798bdb83349b8256c295a8ee89,
     type: 3}
+  Rengeki1particle: {fileID: 198741542255655676, guid: c89755932eb258c45b2ccb06b4754a8a,
+    type: 3}
+  Rengeki2particle: {fileID: 198741542255655676, guid: 70002bfb56c18874f98af88c5f34b94e,
+    type: 3}
+  Rengeki3particle: {fileID: 198741542255655676, guid: ce072b133bf55bf40b40b0555433bdbb,
+    type: 3}
+  Rengeki4particle: {fileID: 198412930389571108, guid: 432509f47257c204f88ccccc7a049fa3,
+    type: 3}
+  Finalparticle: {fileID: 198190562059387860, guid: 02d1ded502f21e64d847ab0c8b315fb8,
+    type: 3}
   attackHitCall: {fileID: 648673744}
   DefaultStatus:
     Hp: 10
-    Power: 4
+    Power: 1
   CurrentStatus:
     Hp: 10
     Power: 1
@@ -1094,6 +1110,10 @@ MonoBehaviour:
   jumpPower: 40
   isAttack: 0
   isAttack2: 0
+  isAttacking: 0
+  isAttackingMBUP: 0
+  isAttackChain: 0
+  isFinalAtk: 0
   footColliderCall: {fileID: 2133262465}
 --- !u!114 &559980791
 MonoBehaviour:
@@ -1111,6 +1131,7 @@ MonoBehaviour:
   JoystickValue: {x: 0, y: 0}
   TPSCamera: {fileID: 0}
   PlayerMoveFlg: 0
+  Sword: {fileID: 5150581223861340889}
   AttackFlg: 0
   JumpFlg: 0
   DashFlg: 0
@@ -1171,22 +1192,28 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: isAttack
   - Type: 4
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: isGround
   - Type: 4
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: isRun
   - Type: 4
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: isWalk
   - Type: 9
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: isAttack2
+  - Type: 4
+    SynchronizeType: 2
+    Name: isAttacking
+  - Type: 4
+    SynchronizeType: 2
+    Name: isAttackChain
   m_SynchronizeLayers:
-  - SynchronizeType: 0
+  - SynchronizeType: 2
     LayerIndex: 0
 --- !u!114 &6591705215383372319
 MonoBehaviour:
