@@ -23,6 +23,10 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     //HPBar slider
     public Slider HPslider;
 
+    [SerializeField]
+    [Tooltip("effect")]
+    private ParticleSystem Attack1particle;
+
     // 攻撃HitオブジェクトのColliderCall.
     [SerializeField] ColliderCallReceiver attackHitCall = null;
     // 基本ステータス.
@@ -40,6 +44,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     Rigidbody rigid = null;
     //! 攻撃アニメーション中フラグ.
     public bool isAttack = false;
+    public bool isAttack2 = false;
+
     // 設置判定用ColliderCall.
     [SerializeField] ColliderCallReceiver footColliderCall = null;
     // 接地フラグ.
@@ -71,6 +77,11 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
             {
                 AttackAction();
             }
+            if (Input.GetMouseButtonDown(1))
+            {
+                AttackAction2();
+            }
+
             if (Input.GetKeyDown("space"))
             {
                 if (isGround == true)
@@ -91,7 +102,17 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
         if (col.gameObject.tag == "Enemy")
         {
             var enemy = col.gameObject.GetComponent<EnemyBase>();
-            enemy?.OnAttackHit(CurrentStatus.Power);
+            if (isAttack)
+            {
+
+
+                enemy?.OnAttackHit(CurrentStatus.Power);
+            }
+            if(isAttack2)
+            {
+                enemy?.OnAttackHit((int)(CurrentStatus.Power*1.5f));
+
+            }
             attackHit.SetActive(false);
         }
     }
@@ -109,6 +130,26 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
             isAttack = true;
         }
     }
+    void AttackAction2()
+    {
+        if (isAttack2 == false)
+        {
+            // AnimationのisAttackトリガーを起動.
+            animator.SetTrigger("isAttack2");
+            // 攻撃開始.
+            isAttack2 = true;
+        }
+    }
+    void Attack1_Start()
+    {
+        ParticleSystem newParticle = Instantiate(Attack1particle);
+        newParticle.transform.position = this.transform.position+ newParticle.transform.position;
+        Vector3 LocalAngles = newParticle.transform.localEulerAngles+this.transform.localEulerAngles;
+        newParticle.transform.localEulerAngles = LocalAngles;
+
+        newParticle.Play();
+        Destroy(newParticle.gameObject, 1.0f);
+    }
     void AnimAtk_Hit()
     {
         Debug.Log("Hit");
@@ -122,6 +163,22 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
         attackHit.SetActive(false);
         // 攻撃終了.
         isAttack = false;
+        
+    }
+
+    void Attack2_Start()
+    {
+        Debug.Log("Hit");
+        // 攻撃判定用オブジェクトを表示.
+        attackHit.SetActive(true);
+    }
+    void Attack2_End()
+    {
+        Debug.Log("End");
+        // 攻撃判定用オブジェクトを非表示に.
+        attackHit.SetActive(false);
+        // 攻撃終了.
+        isAttack2 = false;
     }
     // ---------------------------------------------------------------------
     /// <summary>

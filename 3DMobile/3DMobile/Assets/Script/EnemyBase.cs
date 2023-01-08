@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using System.Security.Cryptography;
 
-public class EnemyBase : MonoBehaviour
+public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
 {
     //! 攻撃判定用コライダーコール.
     [SerializeField] ColliderCallReceiver attackHitColliderCall = null;
@@ -25,6 +27,7 @@ public class EnemyBase : MonoBehaviour
         public int Hp = 10;
         // 攻撃力.
         public int Power = 1;
+        public bool isAlive = true;
     }
 
     // 基本ステータス.
@@ -71,6 +74,10 @@ public class EnemyBase : MonoBehaviour
         {
             attackTimer = 0;
         }
+        if(!CurrentStatus.isAlive)
+        {
+            transform.localPosition = new Vector3(0, transform.localPosition.y, 30);
+        }
     }
     // ----------------------------------------------------------
     /// <summary>
@@ -111,8 +118,8 @@ public class EnemyBase : MonoBehaviour
     // ----------------------------------------------------------
     void Anim_Hit02End()
     {
-        this.gameObject.SetActive(false);
-
+        //this.gameObject.SetActive(false);
+        CurrentStatus.isAlive = false;
     }
     // ------------------------------------------------------------
     /// <summary>
@@ -189,5 +196,28 @@ public class EnemyBase : MonoBehaviour
     void Anim_AttackEnd()
     {
         attackHitColliderCall.gameObject.SetActive(false);
+    }
+    void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // Transformの値をストリームに書き込んで送信する
+            stream.SendNext(transform.localPosition);
+            stream.SendNext(transform.localRotation);
+            stream.SendNext(transform.localScale);
+            stream.SendNext(CurrentStatus.Hp);
+            stream.SendNext(CurrentStatus.isAlive);
+
+        }
+        else
+        {
+            // 受信したストリームを読み込んでTransformの値を更新する
+            transform.localPosition = (Vector3)stream.ReceiveNext();
+            transform.localRotation = (Quaternion)stream.ReceiveNext();
+            transform.localScale = (Vector3)stream.ReceiveNext();
+            CurrentStatus.Hp = (int)stream.ReceiveNext();
+            CurrentStatus.isAlive = (bool)stream.ReceiveNext();
+
+        }
     }
 }

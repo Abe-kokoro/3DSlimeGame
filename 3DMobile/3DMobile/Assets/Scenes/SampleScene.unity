@@ -303,9 +303,11 @@ MonoBehaviour:
   DefaultStatus:
     Hp: 10
     Power: 1
+    isAlive: 1
   CurrentStatus:
     Hp: 10
     Power: 1
+    isAlive: 1
   aroundColliderCall: {fileID: 760692083}
 --- !u!135 &59941837
 SphereCollider:
@@ -361,6 +363,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: 59941836}
   - {fileID: 59941843}
   sceneViewId: 14
   InstantiationId: 0
@@ -1792,7 +1795,7 @@ MonoBehaviour:
   m_CollideAgainst:
     serializedVersion: 2
     m_Bits: 1
-  m_IgnoreTag: 
+  m_IgnoreTag: Enemy
   m_TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4058,18 +4061,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &559980775 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7648587338929658550, guid: 0802935cfaba2594ba4dc3574c20470f,
-    type: 3}
-  m_PrefabInstance: {fileID: 7586516467660664100}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &559980786 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7650783925375738624, guid: 0802935cfaba2594ba4dc3574c20470f,
-    type: 3}
-  m_PrefabInstance: {fileID: 7586516467660664100}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &560597451
 GameObject:
   m_ObjectHideFlags: 0
@@ -4398,7 +4389,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh91656
+  m_Name: pb_Mesh59980
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5696,7 +5687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d2c8f647c9a324c829c5ee1edd73e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerObj: {fileID: 559980775}
+  PlayerObj: {fileID: 0}
 --- !u!4 &861253882
 Transform:
   m_ObjectHideFlags: 0
@@ -6445,7 +6436,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh91186
+  m_Name: pb_Mesh59666
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7149,6 +7140,67 @@ MonoBehaviour:
   sceneViewId: 5
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!1001 &1073913636
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1872147318604286, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_Name
+      value: Attack1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1872147318604286, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_RootOrder
+      value: 29
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.33649763
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.2240727
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.08638082
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.9105488
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 197.945
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -158.419
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600120975325910, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 37.117004
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d22a68798bdb83349b8256c295a8ee89, type: 3}
 --- !u!224 &1073939763 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2929252283123773938, guid: aaa2c939c0359ac4dbce3f49e8b90252,
@@ -39264,7 +39316,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh91242
+  m_Name: pb_Mesh59698
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -39691,9 +39743,11 @@ MonoBehaviour:
   DefaultStatus:
     Hp: 10
     Power: 1
+    isAlive: 1
   CurrentStatus:
     Hp: 10
     Power: 1
+    isAlive: 1
   aroundColliderCall: {fileID: 767908206}
 --- !u!135 &1369659636
 SphereCollider:
@@ -39779,6 +39833,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: 1369659635}
   - {fileID: 1369659641}
   sceneViewId: 24
   InstantiationId: 0
@@ -39863,7 +39918,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh92034
+  m_Name: pb_Mesh60264
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -42861,9 +42916,11 @@ MonoBehaviour:
   DefaultStatus:
     Hp: 10
     Power: 1
+    isAlive: 1
   CurrentStatus:
     Hp: 10
     Power: 1
+    isAlive: 1
   aroundColliderCall: {fileID: 1738486548}
 --- !u!135 &1552075975
 SphereCollider:
@@ -43574,7 +43631,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a676291f8f587f4698ae070cf7fb70c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerTransform: {fileID: 559980786}
+  PlayerTransform: {fileID: 0}
   TPSCameraDistance: 6
   TPSMouseSensi: {x: 1, y: 1}
   TPSScreenSensi: {x: 0.1, y: 0.1}
@@ -45126,7 +45183,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh91280
+  m_Name: pb_Mesh59732
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -45343,9 +45400,11 @@ MonoBehaviour:
   DefaultStatus:
     Hp: 10
     Power: 1
+    isAlive: 1
   CurrentStatus:
     Hp: 10
     Power: 1
+    isAlive: 1
   aroundColliderCall: {fileID: 1151227409}
 --- !u!114 &1902574292
 MonoBehaviour:
@@ -45875,7 +45934,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh91464
+  m_Name: pb_Mesh59862
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -55083,12 +55142,12 @@ PrefabInstance:
     - target: {fileID: 7650783925375738624, guid: 0802935cfaba2594ba4dc3574c20470f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.767
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7650783925375738624, guid: 0802935cfaba2594ba4dc3574c20470f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.1929998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7650783925375738624, guid: 0802935cfaba2594ba4dc3574c20470f,
         type: 3}
