@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Photon.Pun;
+using System.Diagnostics;
+
 public class PlyerAnimator : MonoBehaviourPunCallbacks
 {
     // -------------------------------------------------------
@@ -26,11 +28,17 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     [SerializeField]
     [Tooltip("effect")]
     private ParticleSystem Attack1particle;
-
+    [SerializeField] private ParticleSystem Rengeki1particle;
+    [SerializeField] private ParticleSystem Rengeki2particle;
+    [SerializeField] private ParticleSystem Rengeki3particle;
+    [SerializeField] private ParticleSystem Rengeki4particle;
+    [SerializeField] private ParticleSystem Finalparticle;
     // 攻撃HitオブジェクトのColliderCall.
     [SerializeField] ColliderCallReceiver attackHitCall = null;
     // 基本ステータス.
     [SerializeField] Status DefaultStatus = new Status();
+    
+
     // 現在のステータス.
     public Status CurrentStatus = new Status();
 
@@ -45,7 +53,10 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     //! 攻撃アニメーション中フラグ.
     public bool isAttack = false;
     public bool isAttack2 = false;
-
+    public bool isAttacking = false;
+    public bool isAttackingMBUP = false;
+    public bool isAttackChain = false;
+    public bool isFinalAtk = false;
     // 設置判定用ColliderCall.
     [SerializeField] ColliderCallReceiver footColliderCall = null;
     // 接地フラグ.
@@ -73,9 +84,11 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0)&&!isAttacking)
             {
-                AttackAction();
+                //AttackAction();
+                AttackStart();
+                isAttackingMBUP = false;
             }
             if (Input.GetMouseButtonDown(1))
             {
@@ -88,6 +101,20 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
                 {
                     JumpAction();
                 }
+            }
+            if(isAttacking)
+            {
+                if(Input.GetMouseButtonUp(0))
+                {
+                    isAttackingMBUP = true;
+                }
+                if (Input.GetMouseButtonDown(0)&&isAttackingMBUP)
+                {
+                    isAttackChain = true;
+                    animator.SetBool("isAttackChain", true);
+                    isAttackingMBUP = false;
+                }
+               
             }
         }
     }
@@ -106,13 +133,24 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
             {
 
 
-                enemy?.OnAttackHit(CurrentStatus.Power);
+                enemy?.OnAttackHit(CurrentStatus.Power,1);
             }
-            if(isAttack2)
+            else if(isAttack2)
             {
-                enemy?.OnAttackHit((int)(CurrentStatus.Power*1.5f));
+                enemy?.OnAttackHit((int)(CurrentStatus.Power*3f),2);
 
             }
+            else if(isFinalAtk)
+            {
+                enemy?.OnAttackHit(CurrentStatus.Power*2, 2);
+
+            }
+            else
+            {
+                enemy?.OnAttackHit(CurrentStatus.Power, 1);
+
+            }
+
             attackHit.SetActive(false);
         }
     }
@@ -140,6 +178,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
             isAttack2 = true;
         }
     }
+    
     void Attack1_Start()
     {
         ParticleSystem newParticle = Instantiate(Attack1particle);
@@ -152,13 +191,25 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     }
     void AnimAtk_Hit()
     {
-        Debug.Log("Hit");
+        UnityEngine.Debug.Log("Hit");
         // 攻撃判定用オブジェクトを表示.
         attackHit.SetActive(true);
     }
+    void Atk_Hit()
+    {
+        UnityEngine.Debug.Log("Hit");
+        // 攻撃判定用オブジェクトを表示.
+        attackHit.SetActive(true);
+    }
+    void Hit_End()
+    {
+        UnityEngine.Debug.Log("HitEnd");
+        // 攻撃判定用オブジェクトを表示.
+        attackHit.SetActive(false);
+    }
     void AnimAtk_End()
     {
-        Debug.Log("End");
+        UnityEngine.Debug.Log("End");
         // 攻撃判定用オブジェクトを非表示に.
         attackHit.SetActive(false);
         // 攻撃終了.
@@ -168,17 +219,145 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
 
     void Attack2_Start()
     {
-        Debug.Log("Hit");
+        UnityEngine.Debug.Log("Hit");
         // 攻撃判定用オブジェクトを表示.
         attackHit.SetActive(true);
+        ParticleSystem newParticle = Instantiate(Finalparticle);
+        newParticle.transform.position = this.transform.position + newParticle.transform.position;
+        Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
+        newParticle.transform.localEulerAngles = LocalAngles;
+
+        newParticle.Play();
+        Destroy(newParticle.gameObject, 1.0f);
     }
     void Attack2_End()
     {
-        Debug.Log("End");
+        UnityEngine.Debug.Log("End");
         // 攻撃判定用オブジェクトを非表示に.
         attackHit.SetActive(false);
         // 攻撃終了.
         isAttack2 = false;
+    }
+    void AttackStart()
+    {
+        if (isAttacking == false)
+        {
+            // AnimationのisAttackトリガーを起動.
+            animator.SetBool("isAttacking",true);
+            // 攻撃開始.
+            isAttacking = true;
+            isFinalAtk = false;
+        }
+    }
+    void AttackS6_Start()
+    {
+        ParticleSystem newParticle = Instantiate(Rengeki1particle);
+        newParticle.transform.position = this.transform.position + newParticle.transform.position;
+        Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
+        newParticle.transform.localEulerAngles = LocalAngles;
+
+        newParticle.Play();
+        Destroy(newParticle.gameObject, 1.0f);
+        if (isAttackChain)
+        {
+            UnityEngine.Debug.Log("Chain");
+            isAttackChain = false;
+            animator.SetBool("isAttackChain", false);
+        }
+    }
+    void AttackS6_End()
+    {
+        UnityEngine.Debug.Log("End");
+        // AnimationのisAttackトリガーを起動.
+        animator.SetBool("isAttacking", false);
+        // 攻撃開始.
+        isAttacking = false;
+
+    }
+    void AttackS2_Start()
+    {
+
+        if (isAttackChain)
+        {
+            UnityEngine.Debug.Log("Chain");
+            isAttackChain = false;
+            animator.SetBool("isAttackChain", false);
+        }
+    }
+    void AttackS2_Effect()
+    {
+        ParticleSystem newParticle = Instantiate(Rengeki2particle);
+        newParticle.transform.position = this.transform.position + newParticle.transform.position;
+        Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
+        newParticle.transform.localEulerAngles = LocalAngles;
+
+        newParticle.Play();
+        Destroy(newParticle.gameObject, 1.0f);
+    }
+    void AttackS2_End()
+    {
+        
+            UnityEngine.Debug.Log("End");
+            // AnimationのisAttackトリガーを起動.
+            animator.SetBool("isAttacking", false);
+            // 攻撃開始.
+            isAttacking = false;
+
+    }
+    void AttackS5_Start()
+    {
+        
+        if (isAttackChain)
+        {
+            UnityEngine.Debug.Log("Chain");
+            isAttackChain = false;
+            animator.SetBool("isAttackChain", false);
+        }
+    }
+    void AttackS5_Effect()
+    {
+        ParticleSystem newParticle = Instantiate(Rengeki3particle);
+        newParticle.transform.position = this.transform.position + newParticle.transform.position;
+        Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
+        newParticle.transform.localEulerAngles = LocalAngles;
+
+        newParticle.Play();
+        Destroy(newParticle.gameObject, 1.0f);
+    }
+    void AttackS5_End()
+    {
+        
+            UnityEngine.Debug.Log("End");
+            // AnimationのisAttackトリガーを起動.
+            animator.SetBool("isAttacking", false);
+            // 攻撃開始.
+            isAttacking = false;
+
+    }
+    void AttackWS2_Start()
+    {
+        isFinalAtk = true;
+    }
+    void AttackWS2_Effect()
+    {
+        ParticleSystem newParticle = Instantiate(Rengeki4particle);
+        newParticle.transform.position = this.transform.position + newParticle.transform.position;
+        Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
+        newParticle.transform.localEulerAngles = LocalAngles;
+
+        newParticle.Play();
+        Destroy(newParticle.gameObject, 1.0f);
+    }
+    void AttackWS2_End()
+    {
+        UnityEngine.Debug.Log("End");
+        // AnimationのisAttackトリガーを起動.
+        animator.SetBool("isAttacking", false);
+        animator.SetBool("isAttackChain", false);
+        // 攻撃開始.
+        isAttacking = false;
+        isAttackChain = false;
+        isFinalAtk = false;
     }
     // ---------------------------------------------------------------------
     /// <summary>
@@ -229,13 +408,13 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
         }
         else
         {
-            //Debug.Log(damage + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
+            //UnityEngine.Debug.Log(damage + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
         }
     }
     public void AddPlayerDamage(int dmg)
     {
         CurrentStatus.Hp -= dmg;
-        Debug.Log(dmg + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
+        UnityEngine.Debug.Log(dmg + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
         HPslider.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
 
     }
@@ -246,7 +425,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
         {
             CurrentStatus.Hp = DefaultStatus.Hp;
         }
-        Debug.Log("HPを"+HealValue + "回復した!!残りHP" + CurrentStatus.Hp);
+        UnityEngine.Debug.Log("HPを"+HealValue + "回復した!!残りHP" + CurrentStatus.Hp);
         HPslider.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
 
     }
@@ -257,11 +436,16 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     // ---------------------------------------------------------------------
     void OnDie()
     {
-        Debug.Log("死亡しました。");
+        UnityEngine.Debug.Log("死亡しました。");
     }
     public Vector2 GetPlayerHP()
     {
         Vector2 HPStatus = new Vector2(CurrentStatus.Hp, DefaultStatus.Hp);
         return HPStatus;
     }
+    public bool GetPlayerisAttacking()
+    {
+        return isAttacking;
+    }
+
 }
