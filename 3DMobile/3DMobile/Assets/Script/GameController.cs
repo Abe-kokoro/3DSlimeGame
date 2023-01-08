@@ -34,7 +34,7 @@ public class GameController : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         //ランダムに自分のキャラを作成
-        var position = new Vector3(Random.Range(-3.0f, 3.0f), 0.0f, Random.Range(-3.0f, 3.0f));
+        var position = new Vector3(0, 0.0f, 0);
         //マルチプレイ実装まではコメントアウト
         //PhotonNetwork.Instantiate("Avator",position,Quaternion.identity);
         PhotonNetwork.Instantiate("Player",position,Quaternion.identity);
