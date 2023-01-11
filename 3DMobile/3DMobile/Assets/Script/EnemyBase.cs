@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using System.Security.Cryptography;
+using TMPro;
+using System;
 
 public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -13,6 +15,9 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] float attackInterval = 3f;
     //敵キャラクターHPバー
     [SerializeField] Slider EnemyHPBar;
+    //ダメージ表示テキスト
+    [SerializeField] TextMeshProUGUI DmgTextMesh;
+
     // アニメーター.
     Animator animator = null;
     // ----------------------------------------------------------
@@ -40,7 +45,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     bool isBattle = false;
     // 攻撃時間計測用.
     float attackTimer = 0f;
-
+    [SerializeField] GameObject DmgText;
+    [SerializeField] Transform EnemyCanvas;
     void Start()
     {
         
@@ -55,6 +61,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         CurrentStatus.Hp = DefaultStatus.Hp;
         CurrentStatus.Power = DefaultStatus.Power;
         attackHitColliderCall.gameObject.SetActive(false);
+        //DmgText.SetActive(false);
+        
     }
     void Update()
     {
@@ -89,7 +97,9 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         CurrentStatus.Hp -= damage;
         Debug.Log("Hit Damage " + damage + "/CurrentHp = " + CurrentStatus.Hp);
-
+        DmgText.GetComponent<TextMeshProUGUI>().text = ""+damage;
+        Instantiate(DmgText, EnemyCanvas);
+        Invoke("ClearDmg", 1);
         if (CurrentStatus.Hp <= 0)
         {
             OnDie();
@@ -107,7 +117,14 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             animator.SetTrigger("isHit02");
         }
     }
-
+    void ClearDmg()
+    {
+        for (int index = 0; index < EnemyCanvas.childCount; index++)
+        {
+            // RectTransform の指定だと削除が失敗するので gameObject を指定する
+            Destroy(EnemyCanvas.GetChild(index).gameObject);
+        }
+    }
     // ----------------------------------------------------------
     /// <summary>
     /// 死亡時コール.
