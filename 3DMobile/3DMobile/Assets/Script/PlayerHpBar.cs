@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class PlayerHpBar : MonoBehaviour
+using Photon.Pun;
+public class PlayerHpBar : MonoBehaviourPunCallbacks
 {
     public int PlayerMaxHp = 100;
     public int PlayerCurrentHp;
@@ -21,16 +21,20 @@ public class PlayerHpBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!slider)
-        {
-            slider = FindObjectOfType<Slider>();
-            PlayerCurrentHp = PlayerMaxHp;
-        }
-        else
-        {
-            slider.value = (float)PlayerCurrentHp / (float)PlayerMaxHp;
+        
 
-        }
+
+            if (!slider)
+            {
+                slider = FindObjectOfType<Slider>();
+                PlayerCurrentHp = PlayerMaxHp;
+            }
+            else
+            {
+                slider.value = (float)PlayerCurrentHp / (float)PlayerMaxHp;
+
+            }
+        
     }
 
     //敵キャラクターとの当たり判定

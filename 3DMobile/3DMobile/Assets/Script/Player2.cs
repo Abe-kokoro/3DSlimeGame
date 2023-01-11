@@ -126,7 +126,7 @@ public class Player2 : MonoBehaviourPunCallbacks
             {
                 DashFlg = false;
             }
-            if (this.GetComponent<PlyerAnimator>().GetPlayerisAttacking() == false)
+            if (!this.GetComponent<PlyerAnimator>().GetPlayerisAttacking()&& !this.GetComponent<PlyerAnimator>().GetPlayerisAttack2())
             {
                 if (PlayerMoveFlg)
                 {
@@ -154,7 +154,7 @@ public class Player2 : MonoBehaviourPunCallbacks
             }
             else
             {
-                //isDash = false;
+                PlayerMoveFlg = false;
             }
 
 
@@ -244,7 +244,12 @@ public class Player2 : MonoBehaviourPunCallbacks
                 animator.SetBool("isWalk", false);
                 animator.SetBool("isRun", false);
             }
-            
+            if(!this.GetComponent<PlyerAnimator>().GetPlayerisGrounnd())
+            {
+                Sword.SetActive(false);
+            }
+
+
 
         }
     }

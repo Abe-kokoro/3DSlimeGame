@@ -344,7 +344,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
         newParticle.transform.position = this.transform.position + newParticle.transform.position;
         Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
         newParticle.transform.localEulerAngles = LocalAngles;
-
+        
         newParticle.Play();
         Destroy(newParticle.gameObject, 1.0f);
     }
@@ -447,5 +447,12 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     {
         return isAttacking;
     }
-
+    public bool GetPlayerisAttack2()
+    {
+        return isAttack2;
+    }
+    public bool GetPlayerisGrounnd()
+    {
+        return isGround;
+    }
 }

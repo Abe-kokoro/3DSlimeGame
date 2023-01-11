@@ -20,5 +20,6 @@ public class PlayerCanvas : MonoBehaviour
             MainCamera = FindObjectOfType<Camera>();
             this.GetComponent<Canvas>().worldCamera = MainCamera; 
         }
+        this.transform.rotation = Camera.main.transform.rotation;
     }
 }

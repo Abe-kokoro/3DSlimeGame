@@ -199,6 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 371907950}
+  PlayerCanvas: {fileID: 0}
 --- !u!1 &371907948
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,6 +1153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 371907950}
+  PlayerCanvas: {fileID: 371907948}
 --- !u!114 &735781990384420134
 MonoBehaviour:
   m_ObjectHideFlags: 0
