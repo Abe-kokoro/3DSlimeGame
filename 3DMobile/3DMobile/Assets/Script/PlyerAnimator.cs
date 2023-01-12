@@ -57,6 +57,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     public bool isAttackingMBUP = false;
     public bool isAttackChain = false;
     public bool isFinalAtk = false;
+    public bool JumpFlg = false;
+    public bool isPC = false;
     // 設置判定用ColliderCall.
     [SerializeField] ColliderCallReceiver footColliderCall = null;
     // 接地フラグ.
@@ -82,7 +84,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        if (photonView.IsMine)
+        //if (photonView.IsMine)
+        if(isPC)
         {
             if (Input.GetMouseButtonDown(0)&&!isAttacking)
             {
@@ -95,11 +98,12 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
                 AttackAction2();
             }
 
-            if (Input.GetKeyDown("space"))
+            if (Input.GetKeyDown("space")||JumpFlg)
             {
                 if (isGround == true)
                 {
                     JumpAction();
+                    JumpFlg = false;
                 }
             }
             if(isAttacking)
@@ -454,5 +458,32 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     public bool GetPlayerisGrounnd()
     {
         return isGround;
+    }
+    public void ButtonClicked()
+    {
+        //isAttacking = true;
+        AttackStart();
+        //isAttackingMBUP = false;
+        if (isAttackingMBUP)
+        {
+            isAttackChain = true;
+            animator.SetBool("isAttackChain", true);
+            isAttackingMBUP = false;
+        }
+
+    }
+    public void ButtonClickedUp()
+    {
+        if (isAttacking)
+            isAttackingMBUP = true;
+       
+    }
+    public void JumpClicked()
+    {
+        if (isGround == true)
+        {
+            JumpAction();
+            JumpFlg = false;
+        }
     }
 }

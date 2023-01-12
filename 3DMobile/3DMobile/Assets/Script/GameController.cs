@@ -8,7 +8,8 @@ using System;
 //PUNのコールバックを受け取れるようにする
 public class GameController : MonoBehaviourPunCallbacks
 {
-    bool isMenue = false;
+    [SerializeField] GameObject menu;
+    [SerializeField] bool isPC  = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,19 +19,31 @@ public class GameController : MonoBehaviourPunCallbacks
         //PhotonServerSettingsの設定内容を使って
         //マスターサーバーへ接続する
         PhotonNetwork.ConnectUsingSettings();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("escape"))
+        if (isPC)
         {
-            isMenue = !isMenue;
-            Menue();
+            if (menu.GetComponent<Menu>().GetPauseFlg())
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                if (Input.GetKey(KeyCode.LeftAlt))
+                {
+                    Cursor.lockState = CursorLockMode.Confined;
+                    Cursor.visible = true;
+                }
+
+            }
         }
-        
     }
     //マスターサーバーへの接続が成功した時に呼ばれるコールバック
     public override void OnConnectedToMaster()
@@ -39,20 +52,7 @@ public class GameController : MonoBehaviourPunCallbacks
         //なければ作成して参加する
         PhotonNetwork.JoinOrCreateRoom("RoomTTestATB01",new RoomOptions(),TypedLobby.Default);
     }
-    void Menue()
-    {
-        if(isMenue)
-        {
-
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-    }
+    
     //ゲームサーバーに接続が成功した時に呼ばれるコールバック関数
     public override void OnJoinedRoom()
     {

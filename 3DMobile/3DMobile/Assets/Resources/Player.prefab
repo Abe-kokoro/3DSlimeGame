@@ -1102,8 +1102,8 @@ MonoBehaviour:
     type: 3}
   attackHitCall: {fileID: 648673744}
   DefaultStatus:
-    Hp: 10
-    Power: 1
+    Hp: 200
+    Power: 20
   CurrentStatus:
     Hp: 10
     Power: 1
@@ -1115,6 +1115,8 @@ MonoBehaviour:
   isAttackingMBUP: 0
   isAttackChain: 0
   isFinalAtk: 0
+  JumpFlg: 0
+  isPC: 0
   footColliderCall: {fileID: 2133262465}
 --- !u!114 &559980791
 MonoBehaviour:

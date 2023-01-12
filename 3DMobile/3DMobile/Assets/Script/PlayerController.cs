@@ -34,10 +34,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
             {
                 MinePlayer = GameObject.FindGameObjectWithTag("Player");
                 //ƒ}ƒ‹ƒ`‚Ü‚Å
-                //if (!MinePlayer.GetComponent<Player>().photonView.IsMine)
-                //{
-                //    MinePlayer = null;
-                //}
+                if (!MinePlayer.GetComponent<Player2>().photonView.IsMine)
+                {
+                    MinePlayer = null;
+                }
             }
         }
         if(MinePlayer)
@@ -55,19 +55,23 @@ public class PlayerController : MonoBehaviourPunCallbacks
     }
     public void DClicked()
     {
-        MinePlayer.GetComponent<Player>().DashClicked();
+        MinePlayer.GetComponent<Player2>().DashClicked();
     }
     public void DClickedUp()
     {
-        MinePlayer.GetComponent<Player>().DashClickedUp();
+        MinePlayer.GetComponent<Player2>().DashClickedUp();
     }
     private void Attack()
     {
-        MinePlayer.GetComponent<Player>().ButtonClicked();
+        MinePlayer.GetComponent<PlyerAnimator>().ButtonClicked();
+    }
+    public void AttackUp()
+    {
+        MinePlayer.GetComponent<PlyerAnimator>().ButtonClickedUp();
     }
     private void Jump()
     {
-        MinePlayer.GetComponent<Player>().JumpClicked();
+        MinePlayer.GetComponent<PlyerAnimator>().JumpClicked();
     }
     public float GetPlayerCurrentHP()
     {

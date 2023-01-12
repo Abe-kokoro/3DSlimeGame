@@ -286,14 +286,7 @@ public class Player2 : MonoBehaviourPunCallbacks
     {
         return Right;
     }
-    public void ButtonClicked()
-    {
-        AttackFlg = true;
-    }
-    public void JumpClicked()
-    {
-        JumpFlg = true;
-    }
+    
     public void DashClicked()
     {
         DashFlg = true;

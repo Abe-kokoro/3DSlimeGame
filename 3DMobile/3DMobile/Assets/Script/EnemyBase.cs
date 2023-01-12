@@ -15,9 +15,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] float attackInterval = 3f;
     //敵キャラクターHPバー
     [SerializeField] Slider EnemyHPBar;
-    //ダメージ表示テキスト
-    [SerializeField] TextMeshProUGUI DmgTextMesh;
-
+   
     // アニメーター.
     Animator animator = null;
     // ----------------------------------------------------------
@@ -33,6 +31,9 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         // 攻撃力.
         public int Power = 1;
         public bool isAlive = true;
+        public float DefaultSpeed = 4.0f;
+        public float TraseSpeed = 8.0f;
+
     }
 
     // 基本ステータス.
@@ -41,10 +42,16 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     public Status CurrentStatus = new Status();
     // 周辺レーダーコライダーコール.
     [SerializeField] ColliderCallReceiver aroundColliderCall = null;
+    [SerializeField] ColliderCallReceiver AtkColliderCall = null;
+
     // 攻撃状態フラグ.
     bool isBattle = false;
+    bool isTrase = false;
+    bool isMove = false;
     // 攻撃時間計測用.
     float attackTimer = 0f;
+    [SerializeField]float RotateTimer = 0f;
+    [SerializeField]float NextRotateCoolTime = 3f;
     [SerializeField] GameObject DmgText;
     [SerializeField] Transform EnemyCanvas;
     void Start()
@@ -55,6 +62,11 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         aroundColliderCall.TriggerEnterEvent.AddListener(OnAroundTriggerEnter);
         aroundColliderCall.TriggerStayEvent.AddListener(OnAroundTriggerStay);
         aroundColliderCall.TriggerExitEvent.AddListener(OnAroundTriggerExit);
+        // 攻撃コライダーイベント登録.
+        AtkColliderCall.TriggerEnterEvent.AddListener(OnAtkTriggerEnter);
+        AtkColliderCall.TriggerStayEvent.AddListener(OnAtkTriggerStay);
+        AtkColliderCall.TriggerExitEvent.AddListener(OnAtkTriggerExit);
+
         // 攻撃コライダーイベント登録.
         attackHitColliderCall.TriggerEnterEvent.AddListener(OnAttackTriggerEnter);
         // 最初に現在のステータスを基本ステータスとして設定.
@@ -70,6 +82,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         // 攻撃できる状態の時.
         if (isBattle == true)
         {
+            animator.SetBool("isMove", false);
             attackTimer += Time.deltaTime;
 
             if (attackTimer >= 3f)
@@ -81,7 +94,28 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             attackTimer = 0;
+            if (isTrase == true)
+            {
+                animator.SetBool("isMove", true);
+                if(isMove)
+                this.transform.position += this.transform.forward * CurrentStatus.TraseSpeed * Time.deltaTime;
+            }
+            else
+            {
+                this.transform.position += this.transform.forward * CurrentStatus.DefaultSpeed * Time.deltaTime;
+                RotateTimer += Time.deltaTime;
+                animator.SetBool("isMove", false);
+                if (RotateTimer >= NextRotateCoolTime)
+                {
+                    // 回転
+                    //transform.RotateTo(new Vector3(1, 0, 0), 1, EasingTypes.BounceOut);
+                    this.transform.eulerAngles = new Vector3(0, this.transform.eulerAngles.y + UnityEngine.Random.Range(30, 270), 0);
+                    NextRotateCoolTime = UnityEngine.Random.Range(2, 10);
+                    RotateTimer = 0;
+                }
+            }
         }
+       
         if(!CurrentStatus.isAlive)
         {
             transform.localPosition = new Vector3(0, transform.localPosition.y, 30);
@@ -135,7 +169,14 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log("死亡");
         animator.SetTrigger("isHit02");
     }
-
+    void SlimeMoveStart()
+    {
+        isMove = true;
+    }
+    void SlimeMoveEnd()
+    {
+        isMove = false;
+    }
     // ----------------------------------------------------------
     /// <summary>
     /// 死亡アニメーション終了時コール.
@@ -155,11 +196,53 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     /// </summary>
     /// <param name="other"> 接近コライダー. </param>
     // ------------------------------------------------------------
-    void OnAroundTriggerEnter(Collider other)
+    void OnAtkTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
             isBattle = true;
+            animator.SetTrigger("isAttack");
+        }
+    }
+    // ------------------------------------------------------------
+    /// <summary>
+    /// 周辺レーダーコライダーステイイベントコール.
+    /// </summary>
+    /// <param name="other"> 接近コライダー. </param>
+    // ------------------------------------------------------------
+    void OnAtkTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            var _dir = (other.gameObject.transform.position - this.transform.position).normalized;
+            _dir.y = 0;
+            this.transform.forward = _dir;
+        }
+    }
+    // ------------------------------------------------------------
+    /// <summary>
+    /// 周辺レーダーコライダー終了イベントコール.
+    /// </summary>
+    /// <param name="other"> 接近コライダー. </param>
+    // ------------------------------------------------------------
+    void OnAtkTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            isBattle = false;
+        }
+    }
+    // ------------------------------------------------------------
+    /// <summary>
+    /// 周辺レーダーコライダーエンターイベントコール.
+    /// </summary>
+    /// <param name="other"> 接近コライダー. </param>
+    // ------------------------------------------------------------
+    void OnAroundTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            isTrase = true;
         }
     }
     // ------------------------------------------------------------
@@ -175,6 +258,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             var _dir = (other.gameObject.transform.position - this.transform.position).normalized;
             _dir.y = 0;
             this.transform.forward = _dir;
+
         }
     }
     // ------------------------------------------------------------
@@ -187,7 +271,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (other.gameObject.tag == "Player")
         {
-            isBattle = false;
+            isTrase = false;
         }
     }
     // ------------------------------------------------------------
