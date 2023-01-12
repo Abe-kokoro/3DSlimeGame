@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class Menu : MonoBehaviour
 {
@@ -23,8 +24,13 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject ResumeButton3;
     [SerializeField] private GameObject ExitCancelButton;
     [SerializeField] private GameObject ExitTrueButton;
+    [SerializeField] bool PauseFlg = false;
+    bool isMenu = false;
     void Start()
     {
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+
         pausePanel.SetActive(false);
         pauseButton.SetActive(true);
         resumeButton.SetActive(false);
@@ -50,7 +56,26 @@ public class Menu : MonoBehaviour
         HintButton.GetComponent<Button>().onClick.AddListener(HintoMenu);
         MapButton.GetComponent<Button>().onClick.AddListener(MapView);
     }
+    void Update()
+    {
+        
+       
 
+    }
+    void Menue()
+    {
+        if (PauseFlg)
+        {
+
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
     private void Pause()
     {
         Time.timeScale = 0;  // ŽžŠÔ’âŽ~
@@ -62,6 +87,7 @@ public class Menu : MonoBehaviour
         SettingsButton.SetActive(true);
         HintButton.SetActive(true);
         MapButton.SetActive(true);
+        PauseFlg = true;
     }
 
     private void Resume()
@@ -75,6 +101,7 @@ public class Menu : MonoBehaviour
         SettingsButton.SetActive(false);
         HintButton.SetActive(false);
         MapButton.SetActive(false);
+        PauseFlg = false;
     }
     private void ExitMenu()
     {
@@ -112,5 +139,9 @@ public class Menu : MonoBehaviour
     private void MapView()
     {
 
+    }
+    public bool GetPauseFlg()
+    {
+        return PauseFlg;
     }
 }
