@@ -6,16 +6,19 @@ using Photon.Pun;
 using System.Security.Cryptography;
 using TMPro;
 using System;
+using SimpleEasing;
 
 public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
 {
+    [SerializeField, Range(1, 1000)]
+    int EnemyLv;
     //! 攻撃判定用コライダーコール.
     [SerializeField] ColliderCallReceiver attackHitColliderCall = null;
     // 攻撃間隔.
     [SerializeField] float attackInterval = 3f;
     //敵キャラクターHPバー
     [SerializeField] Slider EnemyHPBar;
-   
+    [SerializeField] GameObject TrasePlayer = null;
     // アニメーター.
     Animator animator = null;
     // ----------------------------------------------------------
@@ -26,12 +29,13 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     [System.Serializable]
     public class Status
     {
+        public int Lv = 1;
         // HP.
         public int Hp = 10;
         // 攻撃力.
         public int Power = 1;
         public bool isAlive = true;
-        public float DefaultSpeed = 4.0f;
+        public float DefaultSpeed = 1.0f;
         public float TraseSpeed = 8.0f;
 
     }
@@ -43,16 +47,21 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     // 周辺レーダーコライダーコール.
     [SerializeField] ColliderCallReceiver aroundColliderCall = null;
     [SerializeField] ColliderCallReceiver AtkColliderCall = null;
+    [SerializeField] ColliderCallReceiver SensorColliderCall = null;
+
 
     // 攻撃状態フラグ.
     bool isBattle = false;
     bool isTrase = false;
     bool isMove = false;
+    bool isWalk = false;
+    bool isRotate = false;
     // 攻撃時間計測用.
     float attackTimer = 0f;
     [SerializeField]float RotateTimer = 0f;
     [SerializeField]float NextRotateCoolTime = 3f;
     [SerializeField] GameObject DmgText;
+    [SerializeField] TextMeshPro EnemyLvText;
     [SerializeField] Transform EnemyCanvas;
     void Start()
     {
@@ -67,22 +76,31 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         AtkColliderCall.TriggerStayEvent.AddListener(OnAtkTriggerStay);
         AtkColliderCall.TriggerExitEvent.AddListener(OnAtkTriggerExit);
 
+        SensorColliderCall.TriggerStayEvent.AddListener(OnSensorTriggerEnter);
+
         // 攻撃コライダーイベント登録.
         attackHitColliderCall.TriggerEnterEvent.AddListener(OnAttackTriggerEnter);
+        DefaultStatus.Hp = 90 + EnemyLv * 12;
+        DefaultStatus.Power = 10+EnemyLv * 3;
         // 最初に現在のステータスを基本ステータスとして設定.
         CurrentStatus.Hp = DefaultStatus.Hp;
         CurrentStatus.Power = DefaultStatus.Power;
+        CurrentStatus.Lv = DefaultStatus.Lv;
         attackHitColliderCall.gameObject.SetActive(false);
         //DmgText.SetActive(false);
-        
+        NextRotateCoolTime = UnityEngine.Random.Range(8, 16);
+        TrasePlayer = null;
     }
     void Update()
     {
+        CurrentStatus.Lv = EnemyLv;
+        EnemyLvText.text = "LV." + EnemyLv;
         EnemyHPBar.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
         // 攻撃できる状態の時.
         if (isBattle == true)
         {
             animator.SetBool("isMove", false);
+            animator.SetBool("isWalk", false);
             attackTimer += Time.deltaTime;
 
             if (attackTimer >= 3f)
@@ -97,21 +115,37 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             if (isTrase == true)
             {
                 animator.SetBool("isMove", true);
-                if(isMove)
+                animator.SetBool("isWalk", false);
+                if (isMove)
                 this.transform.position += this.transform.forward * CurrentStatus.TraseSpeed * Time.deltaTime;
             }
             else
             {
-                this.transform.position += this.transform.forward * CurrentStatus.DefaultSpeed * Time.deltaTime;
+                //this.transform.position += this.transform.forward * CurrentStatus.DefaultSpeed * Time.deltaTime;
+                if (isRotate)
+                {
+                    animator.SetBool("isWalk", false);
+                }
+                else
+                {
+                    animator.SetBool("isWalk", true);
+                }
                 RotateTimer += Time.deltaTime;
                 animator.SetBool("isMove", false);
                 if (RotateTimer >= NextRotateCoolTime)
                 {
+                    isRotate = true;
+                    Invoke("SetisRotate",2.5f);
                     // 回転
-                    //transform.RotateTo(new Vector3(1, 0, 0), 1, EasingTypes.BounceOut);
-                    this.transform.eulerAngles = new Vector3(0, this.transform.eulerAngles.y + UnityEngine.Random.Range(30, 270), 0);
-                    NextRotateCoolTime = UnityEngine.Random.Range(2, 10);
-                    RotateTimer = 0;
+                    this.transform.RotateTo(new Vector3(0, UnityEngine.Random.Range(0, 360)-180, 0), 2.5f, EasingTypes.BackIn);
+                    //this.transform.eulerAngles = new Vector3(0, this.transform.eulerAngles.y + UnityEngine.Random.Range(30, 270), 0);
+                    
+                    
+                }
+                else
+                {
+                    if (isWalk)
+                        this.transform.position += this.transform.forward * CurrentStatus.TraseSpeed*0.7f * Time.deltaTime;
                 }
             }
         }
@@ -121,19 +155,37 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             transform.localPosition = new Vector3(0, transform.localPosition.y, 30);
         }
     }
+    void SetisRotate()
+    {
+        isRotate = false;
+        NextRotateCoolTime = UnityEngine.Random.Range(8, 16);
+        RotateTimer = 0;
+    }
+    void OnSensorTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Field")
+        {
+            isRotate = false;
+            this.transform.eulerAngles += new Vector3(0, 1, 0);
+        }
+
+    }
     // ----------------------------------------------------------
     /// <summary>
     /// 攻撃ヒット時コール.
     /// </summary>
     /// <param name="damage"> 食らったダメージ. </param>
     // ----------------------------------------------------------
-    public void OnAttackHit(int damage,int dmgLevel)
+    public void OnAttackHit(int damage,int dmgLevel,bool isMine)
     {
-        CurrentStatus.Hp -= damage;
+        
+            CurrentStatus.Hp -= damage;
+            
         Debug.Log("Hit Damage " + damage + "/CurrentHp = " + CurrentStatus.Hp);
         DmgText.GetComponent<TextMeshProUGUI>().text = ""+damage;
+        DmgText.transform.localPosition = new Vector3(UnityEngine.Random.Range(-100,100),10,0);
         Instantiate(DmgText, EnemyCanvas);
-        Invoke("ClearDmg", 1);
+        //Invoke("ClearDmg(DmgText)", 1);
         if (CurrentStatus.Hp <= 0)
         {
             OnDie();
@@ -151,14 +203,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             animator.SetTrigger("isHit02");
         }
     }
-    void ClearDmg()
-    {
-        for (int index = 0; index < EnemyCanvas.childCount; index++)
-        {
-            // RectTransform の指定だと削除が失敗するので gameObject を指定する
-            Destroy(EnemyCanvas.GetChild(index).gameObject);
-        }
-    }
+    
     // ----------------------------------------------------------
     /// <summary>
     /// 死亡時コール.
@@ -176,6 +221,14 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     void SlimeMoveEnd()
     {
         isMove = false;
+    }
+    void SlimeWalkStart()
+    {
+        isWalk = true;
+    }
+    void SlimeWalkEnd()
+    {
+        isWalk = false;
     }
     // ----------------------------------------------------------
     /// <summary>
@@ -200,8 +253,10 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (other.gameObject.tag == "Player")
         {
-            isBattle = true;
-            animator.SetTrigger("isAttack");
+            
+                isBattle = true;
+                animator.SetTrigger("isAttack");
+            
         }
     }
     // ------------------------------------------------------------
@@ -240,9 +295,13 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     // ------------------------------------------------------------
     void OnAroundTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player")
-        {
-            isTrase = true;
+        if (TrasePlayer==null)
+        { 
+            if (other.gameObject.tag == "Player")
+            {
+                TrasePlayer = other.gameObject;
+                isTrase = true;
+            }
         }
     }
     // ------------------------------------------------------------
@@ -255,10 +314,12 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (other.gameObject.tag == "Player")
         {
-            var _dir = (other.gameObject.transform.position - this.transform.position).normalized;
-            _dir.y = 0;
-            this.transform.forward = _dir;
-
+            if (other.gameObject == TrasePlayer)
+            {
+                var _dir = (other.gameObject.transform.position - this.transform.position).normalized;
+                _dir.y = 0;
+                this.transform.forward = _dir;
+            }
         }
     }
     // ------------------------------------------------------------
@@ -271,7 +332,11 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (other.gameObject.tag == "Player")
         {
-            isTrase = false;
+            if (TrasePlayer == other.gameObject)
+            {
+                TrasePlayer = null;
+                isTrase = false;
+            }
         }
     }
     // ------------------------------------------------------------
@@ -284,10 +349,13 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (other.gameObject.tag == "Player")
         {
-            var player = other.GetComponent<PlyerAnimator>();
-            player?.OnEnemyAttackHit(CurrentStatus.Power);
-            Debug.Log("プレイヤーに敵の攻撃がヒット！" + CurrentStatus.Power + "の力で攻撃！");
-            attackHitColliderCall.gameObject.SetActive(false);
+            if (other.GetComponent<Player2>().photonView.IsMine)
+            {
+                var player = other.GetComponent<PlyerAnimator>();
+                player?.OnEnemyAttackHit(CurrentStatus.Power);
+                Debug.Log("プレイヤーに敵の攻撃がヒット！" + CurrentStatus.Power + "の力で攻撃！");
+                attackHitColliderCall.gameObject.SetActive(false);
+            }
         }
     }
     // ----------------------------------------------------------
@@ -319,7 +387,13 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(transform.localScale);
             stream.SendNext(CurrentStatus.Hp);
             stream.SendNext(CurrentStatus.isAlive);
-
+            stream.SendNext(CurrentStatus.Lv);
+            stream.SendNext(CurrentStatus.Power);
+            stream.SendNext(DefaultStatus.Hp);
+            stream.SendNext(DefaultStatus.isAlive);
+            stream.SendNext(DefaultStatus.Lv);
+            stream.SendNext(DefaultStatus.Power);
+            //stream.SendNext(TrasePlayer);
         }
         else
         {
@@ -329,7 +403,13 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             transform.localScale = (Vector3)stream.ReceiveNext();
             CurrentStatus.Hp = (int)stream.ReceiveNext();
             CurrentStatus.isAlive = (bool)stream.ReceiveNext();
-
+            CurrentStatus.Lv = (int)stream.ReceiveNext();
+            CurrentStatus.Power = (int)stream.ReceiveNext();
+            DefaultStatus.Hp = (int)stream.ReceiveNext();
+            DefaultStatus.isAlive = (bool)stream.ReceiveNext();
+            DefaultStatus.Lv = (int)stream.ReceiveNext();
+            DefaultStatus.Power = (int)stream.ReceiveNext();
+            //TrasePlayer = (GameObject)stream.ReceiveNext();
         }
     }
 }

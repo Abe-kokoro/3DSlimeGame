@@ -18,5 +18,10 @@ public class DmgTextMove : MonoBehaviour
     void Update()
     {
         this.GetComponent<RectTransform>().position += MoveValue;
+        Invoke("ClearDmg", 1f);
+    }
+    void ClearDmg()
+    {
+        Destroy(this.gameObject);
     }
 }

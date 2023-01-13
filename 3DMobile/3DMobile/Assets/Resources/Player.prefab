@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &287102308
 RectTransform:
   m_ObjectHideFlags: 0
@@ -769,8 +769,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2133262460}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.019000014, y: 0.22, z: -0.02605331}
-  m_LocalScale: {x: 0.6446005, y: 0.6446005, z: 0.6446005}
+  m_LocalPosition: {x: 0.006, y: 0.008, z: -0.02605331}
+  m_LocalScale: {x: 0.016367188, y: 0.18777679, z: 0.18777679}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7650783925375738624}
@@ -1087,6 +1087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a266daa50249924fb4daa62398035d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerLv: 1
   HPslider: {fileID: 1665405420}
   Attack1particle: {fileID: 198741542255655676, guid: d22a68798bdb83349b8256c295a8ee89,
     type: 3}
@@ -1102,9 +1103,11 @@ MonoBehaviour:
     type: 3}
   attackHitCall: {fileID: 648673744}
   DefaultStatus:
+    Lv: 1
     Hp: 200
     Power: 20
   CurrentStatus:
+    Lv: 1
     Hp: 10
     Power: 1
   attackHit: {fileID: 648673739}
@@ -1173,8 +1176,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
+  observableSearch: 0
   ObservedComponents:
+  - {fileID: 559980781}
   - {fileID: 962910302947784938}
   - {fileID: 6591705215383372319}
   sceneViewId: 0

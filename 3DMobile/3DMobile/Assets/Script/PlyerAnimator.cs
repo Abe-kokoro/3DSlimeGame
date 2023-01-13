@@ -6,9 +6,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Photon.Pun;
 using System.Diagnostics;
+using System;
 
-public class PlyerAnimator : MonoBehaviourPunCallbacks
-{
+public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
+{ 
+    [SerializeField, Range(1, 100)]
+    int PlayerLv;
     // -------------------------------------------------------
     /// <summary>
     /// ステータス.
@@ -17,6 +20,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     [System.Serializable]
     public class Status
     {
+        public int Lv = 1;
         // 体力.
         public int Hp = 10;
         // 攻撃力.
@@ -71,21 +75,30 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
         rigid = GetComponent<Rigidbody>();
         attackHit.SetActive(false);
         // FootSphereのイベント登録.
+        
         footColliderCall.TriggerStayEvent.AddListener(OnFootTriggerStay);
         footColliderCall.TriggerExitEvent.AddListener(OnFootTriggerExit);
         // 攻撃判定用コライダーイベント登録.
         attackHitCall.TriggerEnterEvent.AddListener(OnAttackHitTriggerEnter);
+        DefaultStatus.Lv = 1;
+        DefaultStatus.Hp = 1000;
+        DefaultStatus.Power = 10;
         // 現在のステータスの初期化.
+        CurrentStatus.Lv = DefaultStatus.Lv;
         CurrentStatus.Hp = DefaultStatus.Hp;
         CurrentStatus.Power = DefaultStatus.Power;
         HPslider.value = 1;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+            HPslider.value =(float) CurrentStatus.Hp / (float)DefaultStatus.Hp;
+        
         //if (photonView.IsMine)
-        if(isPC)
+        if (isPC)
         {
             if (Input.GetMouseButtonDown(0)&&!isAttacking)
             {
@@ -121,6 +134,17 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
                
             }
         }
+        if (photonView.IsMine)
+        {
+            if (Input.GetKeyDown("u"))
+            {
+                PlayerLvUp(1);
+            }
+            if (Input.GetKey("p"))
+            {
+                PlayerLvUp(10);
+            }
+        }
     }
     // ---------------------------------------------------------------------
     /// <summary>
@@ -132,30 +156,36 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     {
         if (col.gameObject.tag == "Enemy")
         {
-            var enemy = col.gameObject.GetComponent<EnemyBase>();
-            if (isAttack)
+            bool isMine = false;
+            if (photonView.IsMine)
             {
-
-
-                enemy?.OnAttackHit(CurrentStatus.Power,1);
+                isMine = true;
             }
-            else if(isAttack2)
-            {
-                enemy?.OnAttackHit((int)(CurrentStatus.Power*3f),2);
+                var enemy = col.gameObject.GetComponent<EnemyBase>();
+                if (isAttack)
+                {
 
-            }
-            else if(isFinalAtk)
-            {
-                enemy?.OnAttackHit(CurrentStatus.Power*2, 2);
 
-            }
-            else
-            {
-                enemy?.OnAttackHit(CurrentStatus.Power, 1);
+                    enemy?.OnAttackHit(CurrentStatus.Power, 1,isMine);
+                }
+                else if (isAttack2)
+                {
+                    enemy?.OnAttackHit((int)(CurrentStatus.Power * 3f), 2, isMine);
 
-            }
+                }
+                else if (isFinalAtk)
+                {
+                    enemy?.OnAttackHit(CurrentStatus.Power * 2, 2, isMine);
 
-            attackHit.SetActive(false);
+                }
+                else
+                {
+                    enemy?.OnAttackHit(CurrentStatus.Power, 1, isMine);
+
+                }
+
+                //attackHit.SetActive(false);
+            
         }
     }
     void JumpAction()
@@ -363,6 +393,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
         isAttackChain = false;
         isFinalAtk = false;
     }
+    
     // ---------------------------------------------------------------------
     /// <summary>
     /// FootSphereトリガーステイコール.
@@ -417,21 +448,25 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     }
     public void AddPlayerDamage(int dmg)
     {
-        CurrentStatus.Hp -= dmg;
-        UnityEngine.Debug.Log(dmg + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
-        HPslider.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
-
+        if (this.photonView.IsMine)
+        {
+            CurrentStatus.Hp -= dmg;
+            UnityEngine.Debug.Log(dmg + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
+            HPslider.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
+        }
     }
     public void AddPlayerHP(int HealValue)
     {
-        CurrentStatus.Hp += HealValue;
-        if(CurrentStatus.Hp>DefaultStatus.Hp)
+        if (this.photonView.IsMine)
         {
-            CurrentStatus.Hp = DefaultStatus.Hp;
+            CurrentStatus.Hp += HealValue;
+            if (CurrentStatus.Hp > DefaultStatus.Hp)
+            {
+                CurrentStatus.Hp = DefaultStatus.Hp;
+            }
+            UnityEngine.Debug.Log("HPを" + HealValue + "回復した!!残りHP" + CurrentStatus.Hp);
+            HPslider.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
         }
-        UnityEngine.Debug.Log("HPを"+HealValue + "回復した!!残りHP" + CurrentStatus.Hp);
-        HPslider.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
-
     }
     // ---------------------------------------------------------------------
     /// <summary>
@@ -444,8 +479,10 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     }
     public Vector2 GetPlayerHP()
     {
-        Vector2 HPStatus = new Vector2(CurrentStatus.Hp, DefaultStatus.Hp);
-        return HPStatus;
+        
+            Vector2 HPStatus = new Vector2(CurrentStatus.Hp, DefaultStatus.Hp);
+            return HPStatus;
+        
     }
     public bool GetPlayerisAttacking()
     {
@@ -461,16 +498,22 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
     }
     public void ButtonClicked()
     {
-        //isAttacking = true;
-        AttackStart();
-        //isAttackingMBUP = false;
-        if (isAttackingMBUP)
+        if (isGround)
         {
-            isAttackChain = true;
-            animator.SetBool("isAttackChain", true);
-            isAttackingMBUP = false;
+            //isAttacking = true;
+            AttackStart();
+            //isAttackingMBUP = false;
+            if (isAttackingMBUP)
+            {
+                isAttackChain = true;
+                animator.SetBool("isAttackChain", true);
+                isAttackingMBUP = false;
+            }
         }
-
+        else
+        {
+            AttackAction2();
+        }
     }
     public void ButtonClickedUp()
     {
@@ -484,6 +527,45 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks
         {
             JumpAction();
             JumpFlg = false;
+        }
+    }
+
+    public void PlayerLvUp(int UpValue)
+    {
+        PlayerLv += UpValue;
+        DefaultStatus.Power += UpValue * UnityEngine.Random.Range(6,9);
+        DefaultStatus.Hp += UpValue *100 + UpValue*UnityEngine.Random.Range(25, 50);
+        CurrentStatus.Power = DefaultStatus.Power;
+        CurrentStatus.Hp = DefaultStatus.Hp;
+    }
+    public int GetPlayerLevel()
+    {
+        return PlayerLv;
+    }
+    void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // Transformの値をストリームに書き込んで送信する
+            
+            stream.SendNext(CurrentStatus.Hp);
+            stream.SendNext(CurrentStatus.Power);
+            stream.SendNext(CurrentStatus.Lv);
+            stream.SendNext(DefaultStatus.Hp);
+            stream.SendNext(DefaultStatus.Power);
+            stream.SendNext(DefaultStatus.Lv);
+        }
+        else
+        {
+            // 受信したストリームを読み込んでTransformの値を更新する
+            
+
+            CurrentStatus.Hp = (int)stream.ReceiveNext();
+            CurrentStatus.Power = (int)stream.ReceiveNext();
+            CurrentStatus.Lv = (int)stream.ReceiveNext();
+            DefaultStatus.Hp = (int)stream.ReceiveNext();
+            DefaultStatus.Power = (int)stream.ReceiveNext();
+            DefaultStatus.Lv = (int)stream.ReceiveNext();
         }
     }
 }
