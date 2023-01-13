@@ -96,8 +96,7 @@ public class Menu : MonoBehaviour
         SettingsButton.SetActive(false);
         HintButton.SetActive(false);
         MapButton.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        
         Gamecontroller.GetComponent<GameController>().SetIsMenu(false);
     }
     private void ExitMenu()

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using System.Diagnostics;
 using System;
+using TMPro;
 
 public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
 {
@@ -29,7 +30,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     }
     //HPBar slider
     public Slider HPslider;
-
+    public TextMeshProUGUI LvText;
     [SerializeField]
     [Tooltip("effect")]
     private ParticleSystem Attack1particle;
@@ -42,8 +43,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     [SerializeField] ColliderCallReceiver attackHitCall = null;
     // 基本ステータス.
     [SerializeField] Status DefaultStatus = new Status();
-    [SerializeField]public float EnemyKillCount = 0;
-    [SerializeField]public float LvUpCount = 0;
+    [SerializeField]public int LvUpCount = 0;
+    [SerializeField]public int EnemyKillCount = 0;
     // 現在のステータス.
     public Status CurrentStatus = new Status();
 
@@ -63,7 +64,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     public bool isAttackChain = false;
     public bool isFinalAtk = false;
     public bool JumpFlg = false;
-    public bool isPC = true;
+    public bool isPC = false;
     // 設置判定用ColliderCall.
     [SerializeField] ColliderCallReceiver footColliderCall = null;
     // 接地フラグ.
@@ -72,6 +73,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        LvText.text = "Lv." + CurrentStatus.Lv;
         PlayerName = photonView.Owner.NickName;
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
@@ -96,11 +98,11 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     // Update is called once per frame
     void Update()
     {
-        CurrentStatus.Lv = PlayerLv;
-        HPslider.value =(float) CurrentStatus.Hp / (float)DefaultStatus.Hp;
         
+        HPslider.value =(float) CurrentStatus.Hp / (float)DefaultStatus.Hp;
+        LvText.text = "Lv." + CurrentStatus.Lv;
         //if (photonView.IsMine)
-        if (photonView.IsMine)
+        if (isPC)
         {
             if (Input.GetMouseButtonDown(0)&&!isAttacking)
             {
@@ -548,6 +550,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         DefaultStatus.Hp += UpValue *100 + UpValue*UnityEngine.Random.Range(25, 50);
         CurrentStatus.Power = DefaultStatus.Power;
         CurrentStatus.Hp = DefaultStatus.Hp;
+        CurrentStatus.Lv = PlayerLv;
     }
     public int GetPlayerLevel()
     {
@@ -582,5 +585,14 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     public void AddKillcount()
     {
         EnemyKillCount++;
+    }
+    public int GetKillCount()
+    {
+        return EnemyKillCount;
+    }
+
+    public int GetLvUpCount()
+    {
+        return LvUpCount;
     }
 }

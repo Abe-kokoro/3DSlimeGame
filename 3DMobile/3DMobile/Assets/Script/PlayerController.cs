@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [SerializeField] Slider PlayerHPSlider;
     [SerializeField] TextMeshProUGUI PlayerLevel;
     [SerializeField] GameObject Loading;
+    [SerializeField] TextMeshProUGUI KillCount;
     
     float PlayerCurrentHp;
     float PlayerMaxHp;
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
             PlayerHPSlider.value = PlayerCurrentHp / PlayerMaxHp;
             int Lv = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerLevel(); 
             PlayerLevel.text = "Lv."+Lv;
+            KillCount.text ="ŽŸ‚ÌƒŒƒxƒ‹‚Ü‚Å"+ MinePlayer.GetComponent<PlyerAnimator>().GetKillCount()+"/"+MinePlayer.GetComponent<PlyerAnimator>().GetLvUpCount();
             //ƒ}ƒ‹ƒ`‚Ü‚Å
             // PlayerCurrentHp=MinePlayer.GetComponent<PlayerHpBar>().GetPlayerHP();
             // PlayerMaxHp = MinePlayer.GetComponent<PlayerHpBar>().GetMaxPlayerHP();

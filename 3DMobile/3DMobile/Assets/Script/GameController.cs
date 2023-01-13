@@ -9,7 +9,7 @@ using System;
 public class GameController : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject menu;
-    [SerializeField] bool isPC  = true;
+    [SerializeField] bool isPC  = false;
     [SerializeField] bool isMenu;
     // Start is called before the first frame update
     void Start()
@@ -20,34 +20,40 @@ public class GameController : MonoBehaviourPunCallbacks
         //PhotonServerSettingsの設定内容を使って
         //マスターサーバーへ接続する
         PhotonNetwork.ConnectUsingSettings();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if (isPC)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("escape"))
+        if (isPC)
         {
-            if (isMenu)
+            if (Input.GetKeyDown("escape"))
             {
+                if (isMenu)
+                {
 
-                menu.GetComponent<Menu>().Resume();
-                isMenu = false;
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+                    menu.GetComponent<Menu>().Resume();
+                    isMenu = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+
+                }
+                else
+                {
+                    menu.GetComponent<Menu>().Pause();
+                    isMenu = true;
+
+
+                    Cursor.lockState = CursorLockMode.Confined;
+                    Cursor.visible = true;
+                }
 
             }
-            else
-            {
-                menu.GetComponent<Menu>().Pause();
-                isMenu = true;
-                
-                
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = true;
-            }
-
         }
     }
     //マスターサーバーへの接続が成功した時に呼ばれるコールバック

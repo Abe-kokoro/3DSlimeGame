@@ -17,7 +17,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] ColliderCallReceiver attackHitColliderCall = null;
     // 攻撃間隔.
     //[SerializeField] float attackInterval = 3f;
-    [SerializeField] float SpawnRange = 1f;
+    [SerializeField] float SpawnRange = 10f;
     //敵キャラクターHPバー
     [SerializeField] Slider EnemyHPBar;
     [SerializeField] GameObject TrasePlayer = null;
@@ -156,7 +156,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         if(!CurrentStatus.isAlive)
         {
             
-            DefaultStatus.Lv = CurrentStatus.Lv + UnityEngine.Random.Range(0,4);
+            DefaultStatus.Lv = CurrentStatus.Lv + UnityEngine.Random.Range(0,2);
             CurrentStatus.Lv = DefaultStatus.Lv;
             
             CurrentStatus.isAlive = true;
@@ -167,7 +167,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             CurrentStatus.Power = DefaultStatus.Power;
             
 
-            transform.localPosition = new Vector3(transform.localPosition.x+UnityEngine.Random.Range(5,10)*SpawnRange, transform.localPosition.y+5, transform.localPosition.z+UnityEngine.Random.Range(5, 10) * SpawnRange);
+            transform.localPosition = new Vector3(UnityEngine.Random.Range(5,10)*SpawnRange, transform.localPosition.y+5, UnityEngine.Random.Range(5, 10) * SpawnRange);
         }
     }
     void SetisRotate()
