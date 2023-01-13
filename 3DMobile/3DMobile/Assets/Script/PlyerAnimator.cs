@@ -9,7 +9,8 @@ using System.Diagnostics;
 using System;
 
 public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
-{ 
+{
+    [SerializeField] private string PlayerName;
     [SerializeField, Range(1, 100)]
     int PlayerLv;
     // -------------------------------------------------------
@@ -71,6 +72,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        PlayerName = photonView.Owner.NickName;
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
         attackHit.SetActive(false);
@@ -371,6 +373,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     void AttackWS2_Start()
     {
         isFinalAtk = true;
+        attackHit.SetActive(false);
     }
     void AttackWS2_Effect()
     {
@@ -378,10 +381,10 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         newParticle.transform.position = this.transform.position + newParticle.transform.position;
         Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
         newParticle.transform.localEulerAngles = LocalAngles;
-        
+        attackHit.SetActive(true);
         newParticle.Play();
         Destroy(newParticle.gameObject, 1.0f);
-    }
+    }   
     void AttackWS2_End()
     {
         UnityEngine.Debug.Log("End");
@@ -389,9 +392,11 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         animator.SetBool("isAttacking", false);
         animator.SetBool("isAttackChain", false);
         // çUåÇäJén.
+        
         isAttacking = false;
         isAttackChain = false;
         isFinalAtk = false;
+        animator.SetTrigger("isFinalAtk");
     }
     
     // ---------------------------------------------------------------------

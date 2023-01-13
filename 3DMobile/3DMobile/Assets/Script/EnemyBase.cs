@@ -15,7 +15,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     //! 攻撃判定用コライダーコール.
     [SerializeField] ColliderCallReceiver attackHitColliderCall = null;
     // 攻撃間隔.
-    [SerializeField] float attackInterval = 3f;
+    //[SerializeField] float attackInterval = 3f;
+    [SerializeField] float SpawnRange = 1f;
     //敵キャラクターHPバー
     [SerializeField] Slider EnemyHPBar;
     [SerializeField] GameObject TrasePlayer = null;
@@ -65,7 +66,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] Transform EnemyCanvas;
     void Start()
     {
-        
+        DefaultStatus.Lv = EnemyLv;
+        CurrentStatus.Lv = EnemyLv;
         animator = GetComponent<Animator>();
         // 周辺コライダーイベント登録.
         aroundColliderCall.TriggerEnterEvent.AddListener(OnAroundTriggerEnter);
@@ -93,7 +95,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     }
     void Update()
     {
-        CurrentStatus.Lv = EnemyLv;
+        EnemyLv = CurrentStatus.Lv;
         EnemyLvText.text = "LV." + EnemyLv;
         EnemyHPBar.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
         // 攻撃できる状態の時.
@@ -152,7 +154,18 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
        
         if(!CurrentStatus.isAlive)
         {
-            transform.localPosition = new Vector3(0, transform.localPosition.y, 30);
+            DefaultStatus.Lv = CurrentStatus.Lv + UnityEngine.Random.Range(0,4);
+            CurrentStatus.Lv = DefaultStatus.Lv;
+            
+            CurrentStatus.isAlive = true;
+            DefaultStatus.Hp = 90 + CurrentStatus.Lv * 12;
+            DefaultStatus.Power = 10 + CurrentStatus.Lv * 3;
+            // 最初に現在のステータスを基本ステータスとして設定.
+            CurrentStatus.Hp = DefaultStatus.Hp;
+            CurrentStatus.Power = DefaultStatus.Power;
+            
+
+            transform.localPosition = new Vector3(transform.localPosition.x+UnityEngine.Random.Range(5,10)*SpawnRange, transform.localPosition.y+5, transform.localPosition.z+UnityEngine.Random.Range(5, 10) * SpawnRange);
         }
     }
     void SetisRotate()
