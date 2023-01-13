@@ -167,7 +167,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             CurrentStatus.Power = DefaultStatus.Power;
             
 
-            transform.localPosition = new Vector3(UnityEngine.Random.Range(5,10)*SpawnRange, transform.localPosition.y+5, UnityEngine.Random.Range(5, 10) * SpawnRange);
+            transform.localPosition = new Vector3(UnityEngine.Random.Range(50,100)*SpawnRange, transform.localPosition.y+5, UnityEngine.Random.Range(50, 100) * SpawnRange);
         }
     }
     void SetisRotate()
