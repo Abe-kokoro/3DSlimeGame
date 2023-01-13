@@ -24,8 +24,10 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject ResumeButton3;
     [SerializeField] private GameObject ExitCancelButton;
     [SerializeField] private GameObject ExitTrueButton;
+    [SerializeField] private GameObject Gamecontroller;
     [SerializeField] bool PauseFlg = false;
     bool isMenu = false;
+    bool isButtonUp = false;
     void Start()
     {
         //Cursor.lockState = CursorLockMode.Locked;
@@ -56,29 +58,22 @@ public class Menu : MonoBehaviour
         HintButton.GetComponent<Button>().onClick.AddListener(HintoMenu);
         MapButton.GetComponent<Button>().onClick.AddListener(MapView);
     }
-    void Update()
+    void FixedUpdate()
     {
         
-       
+        
+
+        
 
     }
     void Menue()
     {
-        if (PauseFlg)
-        {
-
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+        
+        
     }
-    private void Pause()
+    public void Pause()
     {
-        Time.timeScale = 0;  // éûä‘í‚é~
+        //Time.timeScale = 0;  // éûä‘í‚é~
         pausePanel.SetActive(true);
         pauseButton.SetActive(false);
         resumeButton.SetActive(true);
@@ -87,12 +82,12 @@ public class Menu : MonoBehaviour
         SettingsButton.SetActive(true);
         HintButton.SetActive(true);
         MapButton.SetActive(true);
-        PauseFlg = true;
+        Gamecontroller.GetComponent<GameController>().SetIsMenu(true);
     }
 
-    private void Resume()
+    public void Resume()
     {
-        Time.timeScale = 1;  // çƒäJ
+        //Time.timeScale = 1;  // çƒäJ
         pausePanel.SetActive(false);
         pauseButton.SetActive(true);
         resumeButton.SetActive(false);
@@ -101,7 +96,9 @@ public class Menu : MonoBehaviour
         SettingsButton.SetActive(false);
         HintButton.SetActive(false);
         MapButton.SetActive(false);
-        PauseFlg = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Gamecontroller.GetComponent<GameController>().SetIsMenu(false);
     }
     private void ExitMenu()
     {

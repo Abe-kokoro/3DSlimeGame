@@ -1107,6 +1107,8 @@ MonoBehaviour:
     Lv: 1
     Hp: 200
     Power: 20
+  EnemyKillCount: 0
+  LvUpCount: 0
   CurrentStatus:
     Lv: 1
     Hp: 10

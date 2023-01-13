@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [SerializeField] GameObject AttackButton;
     [SerializeField] Slider PlayerHPSlider;
     [SerializeField] TextMeshProUGUI PlayerLevel;
+    [SerializeField] GameObject Loading;
     
     float PlayerCurrentHp;
     float PlayerMaxHp;
@@ -22,7 +23,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         //DashButton.GetComponent<Button>().onClick.AddListener(Dash);
         JumpButton.GetComponent<Button>().onClick.AddListener(Jump);
         AttackButton.GetComponent<Button>().onClick.AddListener(Attack);
-        
+        Loading.SetActive(true);
     }
 
     // Update is called once per frame
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
         if(MinePlayer)
         {
-           
+            Loading.SetActive(false);
 
             PlayerCurrentHp = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerHP().x;
             PlayerMaxHp = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerHP().y;

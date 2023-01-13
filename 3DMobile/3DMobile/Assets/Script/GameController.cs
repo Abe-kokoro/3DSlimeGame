@@ -9,7 +9,8 @@ using System;
 public class GameController : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject menu;
-    [SerializeField] bool isPC  = false;
+    [SerializeField] bool isPC  = true;
+    [SerializeField] bool isMenu;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,30 +20,34 @@ public class GameController : MonoBehaviourPunCallbacks
         //PhotonServerSettingsの設定内容を使って
         //マスターサーバーへ接続する
         PhotonNetwork.ConnectUsingSettings();
-        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isPC)
+        if (Input.GetKeyDown("escape"))
         {
-            if (menu.GetComponent<Menu>().GetPauseFlg())
+            if (isMenu)
             {
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = true;
+
+                menu.GetComponent<Menu>().Resume();
+                isMenu = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+
             }
             else
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                if (Input.GetKey(KeyCode.LeftAlt))
-                {
-                    Cursor.lockState = CursorLockMode.Confined;
-                    Cursor.visible = true;
-                }
-
+                menu.GetComponent<Menu>().Pause();
+                isMenu = true;
+                
+                
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = true;
             }
+
         }
     }
     //マスターサーバーへの接続が成功した時に呼ばれるコールバック
@@ -62,5 +67,9 @@ public class GameController : MonoBehaviourPunCallbacks
         //PhotonNetwork.Instantiate("Avator",position,Quaternion.identity);
         PhotonNetwork.Instantiate("Player",position,Quaternion.identity);
 
+    }
+    public void SetIsMenu(bool isMenflg)
+    {
+        isMenu = isMenflg;
     }
 }

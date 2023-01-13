@@ -42,8 +42,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     [SerializeField] ColliderCallReceiver attackHitCall = null;
     // 基本ステータス.
     [SerializeField] Status DefaultStatus = new Status();
-    
-
+    [SerializeField]public float EnemyKillCount = 0;
+    [SerializeField]public float LvUpCount = 0;
     // 現在のステータス.
     public Status CurrentStatus = new Status();
 
@@ -63,7 +63,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     public bool isAttackChain = false;
     public bool isFinalAtk = false;
     public bool JumpFlg = false;
-    public bool isPC = false;
+    public bool isPC = true;
     // 設置判定用ColliderCall.
     [SerializeField] ColliderCallReceiver footColliderCall = null;
     // 接地フラグ.
@@ -90,17 +90,17 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         CurrentStatus.Hp = DefaultStatus.Hp;
         CurrentStatus.Power = DefaultStatus.Power;
         HPslider.value = 1;
-        
+        LvUpCount = CurrentStatus.Lv * 3;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-            HPslider.value =(float) CurrentStatus.Hp / (float)DefaultStatus.Hp;
+        CurrentStatus.Lv = PlayerLv;
+        HPslider.value =(float) CurrentStatus.Hp / (float)DefaultStatus.Hp;
         
         //if (photonView.IsMine)
-        if (isPC)
+        if (photonView.IsMine)
         {
             if (Input.GetMouseButtonDown(0)&&!isAttacking)
             {
@@ -136,6 +136,12 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
                
             }
         }
+        if(EnemyKillCount>=LvUpCount)
+        {
+            EnemyKillCount = 0;
+            LvUpCount = CurrentStatus.Lv * 3;
+            PlayerLvUp(1);
+        }
         if (photonView.IsMine)
         {
             if (Input.GetKeyDown("u"))
@@ -168,21 +174,21 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
                 {
 
 
-                    enemy?.OnAttackHit(CurrentStatus.Power, 1,isMine);
+                    enemy?.OnAttackHit(CurrentStatus.Power, 1,isMine,this.gameObject);
                 }
                 else if (isAttack2)
                 {
-                    enemy?.OnAttackHit((int)(CurrentStatus.Power * 3f), 2, isMine);
+                    enemy?.OnAttackHit((int)(CurrentStatus.Power * 3f), 2, isMine, this.gameObject);
 
                 }
                 else if (isFinalAtk)
                 {
-                    enemy?.OnAttackHit(CurrentStatus.Power * 2, 2, isMine);
+                    enemy?.OnAttackHit(CurrentStatus.Power * 2, 2, isMine, this.gameObject);
 
                 }
                 else
                 {
-                    enemy?.OnAttackHit(CurrentStatus.Power, 1, isMine);
+                    enemy?.OnAttackHit(CurrentStatus.Power, 1, isMine, this.gameObject);
 
                 }
 
@@ -572,5 +578,9 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
             DefaultStatus.Power = (int)stream.ReceiveNext();
             DefaultStatus.Lv = (int)stream.ReceiveNext();
         }
+    }
+    public void AddKillcount()
+    {
+        EnemyKillCount++;
     }
 }

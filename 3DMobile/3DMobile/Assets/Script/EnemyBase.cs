@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using TMPro;
 using System;
 using SimpleEasing;
+using Photon.Pun.Demo.PunBasics;
 
 public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -154,6 +155,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
        
         if(!CurrentStatus.isAlive)
         {
+            
             DefaultStatus.Lv = CurrentStatus.Lv + UnityEngine.Random.Range(0,4);
             CurrentStatus.Lv = DefaultStatus.Lv;
             
@@ -189,7 +191,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     /// </summary>
     /// <param name="damage"> 食らったダメージ. </param>
     // ----------------------------------------------------------
-    public void OnAttackHit(int damage,int dmgLevel,bool isMine)
+    public void OnAttackHit(int damage,int dmgLevel,bool isMine,GameObject PlayerStatus)
     {
         
             CurrentStatus.Hp -= damage;
@@ -201,6 +203,10 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         //Invoke("ClearDmg(DmgText)", 1);
         if (CurrentStatus.Hp <= 0)
         {
+            if(isMine)
+            {
+                PlayerStatus.gameObject.GetComponent<PlyerAnimator>().AddKillcount();
+            }
             OnDie();
         }
         else if(dmgLevel == 1)
