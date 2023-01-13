@@ -16,6 +16,7 @@ public class HPBarDirection : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
+        
         if (photonView.IsMine)
         {
             if(PlayerCanvas == null)
@@ -24,14 +25,14 @@ public class HPBarDirection : MonoBehaviourPunCallbacks
             }
             else
             {
-                PlayerCanvas.SetActive(false);
+               PlayerCanvas.SetActive(false);
 
             }
         }
         else
         {
-            
             canvas.transform.rotation = Camera.main.transform.rotation;
+
         }
     }
 }
