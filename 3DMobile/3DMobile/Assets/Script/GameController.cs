@@ -14,7 +14,7 @@ public class GameController : MonoBehaviourPunCallbacks
     void Start()
     {
         // プレイヤー自身の名前を"Player"に設定する
-        PhotonNetwork.NickName = "Player";
+        PhotonNetwork.NickName = TitleManager.PlayerName;
 
         //PhotonServerSettingsの設定内容を使って
         //マスターサーバーへ接続する

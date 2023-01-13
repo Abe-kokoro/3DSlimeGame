@@ -1087,6 +1087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a266daa50249924fb4daa62398035d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerName: 
   PlayerLv: 1
   HPslider: {fileID: 1665405420}
   Attack1particle: {fileID: 198741542255655676, guid: d22a68798bdb83349b8256c295a8ee89,
