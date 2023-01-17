@@ -92,7 +92,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         CurrentStatus.Hp = DefaultStatus.Hp;
         CurrentStatus.Power = DefaultStatus.Power;
         HPslider.value = 1;
-        LvUpCount = CurrentStatus.Lv * 3;
+        LvUpCount = 3+CurrentStatus.Lv * 2;
     }
 
     // Update is called once per frame

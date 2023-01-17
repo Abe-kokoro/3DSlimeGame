@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     
     float PlayerCurrentHp;
     float PlayerMaxHp;
-    
+    bool isPlayer = false;
     void Start()
     {
         //DashButton.GetComponent<Button>().onClick.AddListener(Dash);
@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if(MinePlayer)
         {
             Loading.SetActive(false);
-
+            isPlayer = true;
             PlayerCurrentHp = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerHP().x;
             PlayerMaxHp = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerHP().y;
             PlayerHPSlider.value = PlayerCurrentHp / PlayerMaxHp;
@@ -86,6 +86,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public float GetPlayerMaxHP()
     {
         return PlayerMaxHp;
+    }
+    public bool GetPlayerFlg()
+    {
+        return isPlayer;
     }
 
 }
