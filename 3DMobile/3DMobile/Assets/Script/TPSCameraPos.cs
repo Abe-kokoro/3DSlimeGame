@@ -42,6 +42,7 @@ public class TPSCameraPos : MonoBehaviour
     private GUIStyle style;
     private int TouchCount;
     Vector2 OldScreensensi;
+    public static bool IsMenu = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,124 +57,128 @@ public class TPSCameraPos : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 SetSensi = new Vector2(ScreenSensiX.value, ScreenSensiY.value);
-        
-       
-        OldScreensensi = new Vector2(ScreenSensiX.value,ScreenSensiY.value);
-       
-        SetScreenSensi(SetSensi/50);
-        SetMouseSensi(SetSensi/5);
-        if (GameObject.FindGameObjectWithTag("Player"))
+
+        if (!Menu.isMenu)
         {
-            if (!PlayerTransform)
+            Vector2 SetSensi = new Vector2(ScreenSensiX.value, ScreenSensiY.value);
+
+
+            OldScreensensi = new Vector2(ScreenSensiX.value, ScreenSensiY.value);
+
+            SetScreenSensi(SetSensi / 50);
+            SetMouseSensi(SetSensi / 5);
+            if (GameObject.FindGameObjectWithTag("Player"))
             {
-                PlayerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-
-            }
-            else
-            {
-
-
-
-
-                if (Mathf.Approximately(Time.timeScale, 0f))
+                if (!PlayerTransform)
                 {
-                    return;
+                    PlayerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+
                 }
-                TouchCount = Input.touchCount;
-                CameraMoveFlg = false;
-                for (int i = 0; i < Input.touchCount; i++)
+                else
                 {
 
-                    // タッチ数分、タッチ情報を確認する
-                    touchInfo = Input.GetTouch(i);
-                    if (touchInfo.position.x > Screen.width / 2)
+
+
+
+                    if (Mathf.Approximately(Time.timeScale, 0f))
                     {
-                        if (touchInfo.phase == TouchPhase.Began)
-                        {
-                            TapOldPos = touchInfo.position;
-                        }
-                        if (touchInfo.phase != TouchPhase.Ended && touchInfo.phase != TouchPhase.Canceled)
-                        {
-                            CameraMoveFlg = true;
-                            TapPos = touchInfo.position;
-                            TapIndex = i;
-
-
-                            transform.LookAt(PlayerTransform);
-                            //MouseAxis.x = Input.GetAxis("Mouse X")-MouseAxisOld.x;
-                            //MouseAxis.y = Input.GetAxis("Mouse Y") - MouseAxisOld.x;
-
-                            MouseAxis.x = TapPos.x - TapOldPos.x;
-                            MouseAxis.y = TapPos.y - TapOldPos.y;
-
-
-
-
-                            // MouseMove -= new Vector2(-Input.GetAxis("Mouse X") * TPSMouseSensi.x, Input.GetAxis("Mouse Y")) * Time.deltaTime * TPSMouseSensi.y;
-                            MouseMove -= new Vector2(-MouseAxis.x * TPSScreenSensi.x * Time.deltaTime * 2, MouseAxis.y * Time.deltaTime * TPSScreenSensi.y);
-
-                            WheelAxis = -Input.GetAxis("Mouse ScrollWheel");
-                            TPSCameraDistance += WheelAxis;
-                            TapOldPos = touchInfo.position;
-
-                        }
-                        else
-                        {
-                            CameraMoveFlg = false;
-                        }
+                        return;
                     }
+                    TouchCount = Input.touchCount;
+                    CameraMoveFlg = false;
+                    for (int i = 0; i < Input.touchCount; i++)
+                    {
+
+                        // タッチ数分、タッチ情報を確認する
+                        touchInfo = Input.GetTouch(i);
+                        if (touchInfo.position.x > Screen.width / 2)
+                        {
+                            if (touchInfo.phase == TouchPhase.Began)
+                            {
+                                TapOldPos = touchInfo.position;
+                            }
+                            if (touchInfo.phase != TouchPhase.Ended && touchInfo.phase != TouchPhase.Canceled)
+                            {
+                                CameraMoveFlg = true;
+                                TapPos = touchInfo.position;
+                                TapIndex = i;
 
 
-                }
-                if (TouchCount == 0)
-                {
-                    transform.LookAt(PlayerTransform);
-                    //MouseAxis.x = Input.GetAxis("Mouse X")-MouseAxisOld.x;
-                    //MouseAxis.y = Input.GetAxis("Mouse Y") - MouseAxisOld.x;
+                                transform.LookAt(PlayerTransform);
+                                //MouseAxis.x = Input.GetAxis("Mouse X")-MouseAxisOld.x;
+                                //MouseAxis.y = Input.GetAxis("Mouse Y") - MouseAxisOld.x;
 
-                    // MouseAxis.x = TapPos.x - TapOldPos.x;
-                    //MouseAxis.y = TapPos.y - TapOldPos.y;
+                                MouseAxis.x = TapPos.x - TapOldPos.x;
+                                MouseAxis.y = TapPos.y - TapOldPos.y;
 
 
 
 
-                    MouseMove -= new Vector2(-Input.GetAxis("Mouse X") * TPSMouseSensi.x, Input.GetAxis("Mouse Y")) * Time.deltaTime * TPSMouseSensi.y;
-                    //MouseMove -= new Vector2(-MouseAxis.x * TPSMouseSensi.x * Time.deltaTime * 2, MouseAxis.y * Time.deltaTime * TPSMouseSensi.y);
+                                // MouseMove -= new Vector2(-Input.GetAxis("Mouse X") * TPSMouseSensi.x, Input.GetAxis("Mouse Y")) * Time.deltaTime * TPSMouseSensi.y;
+                                MouseMove -= new Vector2(-MouseAxis.x * TPSScreenSensi.x * Time.deltaTime * 2, MouseAxis.y * Time.deltaTime * TPSScreenSensi.y);
 
-                    WheelAxis = -Input.GetAxis("Mouse ScrollWheel");
-                    TPSCameraDistance += WheelAxis;
-                    TapOldPos = touchInfo.position;
+                                WheelAxis = -Input.GetAxis("Mouse ScrollWheel");
+                                TPSCameraDistance += WheelAxis;
+                                TapOldPos = touchInfo.position;
 
-                }
-                //  if (Screen.width / 2 < Input.mousePosition.x && Input.GetMouseButton(0))
-                //      if(0<Input.mousePosition.x)
+                            }
+                            else
+                            {
+                                CameraMoveFlg = false;
+                            }
+                        }
 
-                TPSCameraDistance = Mathf.Clamp(TPSCameraDistance, 4.0f, 12);
-                MouseMove.y = Mathf.Clamp(MouseMove.y, -0.4f + 0.5f, 0.4f + 0.5f);
-                //MouseMove += new Vector2(Input.GetAxis("Mouse X")*FPSMouseSensi, Input.GetAxis("Mouse Y")*FPSMouseSensi);
-                // 球面座標系変換
-                pos.x = TPSCameraDistance * Mathf.Sin(MouseMove.y * Mathf.PI) * Mathf.Cos(MouseMove.x * Mathf.PI);
-                pos.y = -TPSCameraDistance * Mathf.Cos(MouseMove.y * Mathf.PI);
-                pos.z = -TPSCameraDistance * Mathf.Sin(MouseMove.y * Mathf.PI) * Mathf.Sin(MouseMove.x * Mathf.PI);
-                //pos *= nowPos.z;
 
-                //pos.y += nowPos.y;
+                    }
+                    if (TouchCount == 0)
+                    {
+                        transform.LookAt(PlayerTransform);
+                        //MouseAxis.x = Input.GetAxis("Mouse X")-MouseAxisOld.x;
+                        //MouseAxis.y = Input.GetAxis("Mouse Y") - MouseAxisOld.x;
 
-                MouseX = MouseMove.x - 0.5f;
-                // 座標の更新
-                if (!(PlayerTransform == null))
-                    transform.position = pos + PlayerTransform.position;
-                // transform.LookAt(PlayerTransform.position);
-                TPSMouseMove = MouseMove;
-                // if(1980 / 2 > Input.mousePosition.x)
-                //if (Screen.width / 2 < Input.mousePosition.x)
-                if (CameraMoveFlg)
-                {
+                        // MouseAxis.x = TapPos.x - TapOldPos.x;
+                        //MouseAxis.y = TapPos.y - TapOldPos.y;
 
-                    //MouseAxisOld = Input.mousePosition;
-                    //MouseAxisOld.x = Input.GetAxis("Mouse X");
-                    //MouseAxisOld.y = Input.GetAxis("Mouse Y");
+
+
+
+                        MouseMove -= new Vector2(-Input.GetAxis("Mouse X") * TPSMouseSensi.x, Input.GetAxis("Mouse Y")) * Time.deltaTime * TPSMouseSensi.y;
+                        //MouseMove -= new Vector2(-MouseAxis.x * TPSMouseSensi.x * Time.deltaTime * 2, MouseAxis.y * Time.deltaTime * TPSMouseSensi.y);
+
+                        WheelAxis = -Input.GetAxis("Mouse ScrollWheel");
+                        TPSCameraDistance += WheelAxis;
+                        TapOldPos = touchInfo.position;
+
+                    }
+                    //  if (Screen.width / 2 < Input.mousePosition.x && Input.GetMouseButton(0))
+                    //      if(0<Input.mousePosition.x)
+
+                    TPSCameraDistance = Mathf.Clamp(TPSCameraDistance, 4.0f, 12);
+                    MouseMove.y = Mathf.Clamp(MouseMove.y, -0.4f + 0.5f, 0.4f + 0.5f);
+                    //MouseMove += new Vector2(Input.GetAxis("Mouse X")*FPSMouseSensi, Input.GetAxis("Mouse Y")*FPSMouseSensi);
+                    // 球面座標系変換
+                    pos.x = TPSCameraDistance * Mathf.Sin(MouseMove.y * Mathf.PI) * Mathf.Cos(MouseMove.x * Mathf.PI);
+                    pos.y = -TPSCameraDistance * Mathf.Cos(MouseMove.y * Mathf.PI);
+                    pos.z = -TPSCameraDistance * Mathf.Sin(MouseMove.y * Mathf.PI) * Mathf.Sin(MouseMove.x * Mathf.PI);
+                    //pos *= nowPos.z;
+
+                    //pos.y += nowPos.y;
+
+                    MouseX = MouseMove.x - 0.5f;
+                    // 座標の更新
+                    if (!(PlayerTransform == null))
+                        transform.position = pos + PlayerTransform.position;
+                    // transform.LookAt(PlayerTransform.position);
+                    TPSMouseMove = MouseMove;
+                    // if(1980 / 2 > Input.mousePosition.x)
+                    //if (Screen.width / 2 < Input.mousePosition.x)
+                    if (CameraMoveFlg)
+                    {
+
+                        //MouseAxisOld = Input.mousePosition;
+                        //MouseAxisOld.x = Input.GetAxis("Mouse X");
+                        //MouseAxisOld.y = Input.GetAxis("Mouse Y");
+                    }
                 }
             }
         }

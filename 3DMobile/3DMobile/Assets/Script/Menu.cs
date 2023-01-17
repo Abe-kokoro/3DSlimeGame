@@ -13,6 +13,9 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject ExitButton;
     [SerializeField] private GameObject SettingsButton;
     [SerializeField] private GameObject HintButton;
+    [SerializeField] private GameObject ExitHintButton;
+    [SerializeField] private GameObject ChatResumeButton;
+
     [SerializeField] private GameObject MapButton;
     //SettingMenu
     [SerializeField] private GameObject SettingPanel;
@@ -20,13 +23,14 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject ResumeButton2;
     //ExitMenu
     [SerializeField] private GameObject ExitPanel;
+    [SerializeField] private GameObject ChatPanel;
     [SerializeField] private GameObject ExitButton2;
     [SerializeField] private GameObject ResumeButton3;
     [SerializeField] private GameObject ExitCancelButton;
     [SerializeField] private GameObject ExitTrueButton;
     [SerializeField] private GameObject Gamecontroller;
     [SerializeField] bool PauseFlg = false;
-    bool isMenu = false;
+    public static bool isMenu = false;
     bool isButtonUp = false;
     void Start()
     {
@@ -43,6 +47,7 @@ public class Menu : MonoBehaviour
         MapButton.SetActive(false);
         SettingPanel.SetActive(false);
         ExitPanel.SetActive(false);
+        ChatPanel.SetActive(false);
         pauseButton.GetComponent<Button>().onClick.AddListener(Pause);
         resumeButton.GetComponent<Button>().onClick.AddListener(Resume);
         //SettingMenu
@@ -55,7 +60,10 @@ public class Menu : MonoBehaviour
         ResumeButton3.GetComponent<Button>().onClick.AddListener(ExitMenuExit);
         ExitCancelButton.GetComponent<Button>().onClick.AddListener(ExitMenuExit);
         ExitTrueButton.GetComponent<Button>().onClick.AddListener(ExitGame);
+        //ƒ`ƒƒƒbƒg
         HintButton.GetComponent<Button>().onClick.AddListener(HintoMenu);
+        ExitHintButton.GetComponent<Button>().onClick.AddListener(HintoMenuExit);
+        ChatResumeButton.GetComponent<Button>().onClick.AddListener(HintoMenuExit);
         MapButton.GetComponent<Button>().onClick.AddListener(MapView);
     }
     void FixedUpdate()
@@ -82,6 +90,7 @@ public class Menu : MonoBehaviour
         SettingsButton.SetActive(true);
         HintButton.SetActive(true);
         MapButton.SetActive(true);
+        isMenu = true;
         Gamecontroller.GetComponent<GameController>().SetIsMenu(true);
     }
 
@@ -96,7 +105,7 @@ public class Menu : MonoBehaviour
         SettingsButton.SetActive(false);
         HintButton.SetActive(false);
         MapButton.SetActive(false);
-        
+        isMenu = false;
         Gamecontroller.GetComponent<GameController>().SetIsMenu(false);
     }
     private void ExitMenu()
@@ -130,8 +139,15 @@ public class Menu : MonoBehaviour
     }
     private void HintoMenu()
     {
-
+        pausePanel.SetActive(false);
+        ChatPanel.SetActive(true);
     }
+    private void HintoMenuExit()
+    {
+        pausePanel.SetActive(true);
+        ChatPanel.SetActive(false);
+    }
+
     private void MapView()
     {
 

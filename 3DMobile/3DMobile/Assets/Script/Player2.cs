@@ -49,208 +49,211 @@ public class Player2 : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        if (photonView.IsMine)
+        if (!Menu.isMenu)
         {
-            if (Input.GetKeyDown("m"))
+            if (photonView.IsMine)
             {
-                MouseFlg = !MouseFlg;
-            }
-            PlayerMoveFlg = false;
-            Right = false;
-            Left = false;
-            Up = false;
-            Down = false;
-            float CameraEulerY = TPSCamera.transform.eulerAngles.y;
-            Vector2 direction;
-            if (joystick)
-            {
-                MouseFlg = true;
-
-                JoystickValue.x = joystick.Horizontal;
-                JoystickValue.y = joystick.Vertical;
-                direction = joystick.Direction;
-                if (JoystickValue.magnitude > 0.2f)
+                if (Input.GetKeyDown("m"))
                 {
-                    MouseFlg = false;
-                    PlayerMoveFlg = true;
-                    JoystickAngle = GetAngle(new Vector3(0, 0), JoystickValue);
-                    if (JoystickValue.y > 0)
-                    {
-                        Up = true;
-                    }
-                    if (JoystickValue.x > 0)
-                    {
-                        Right = true;
-                    }
-                    if (JoystickValue.y < 0)
-                    {
-                        Down = true;
-                    }
-                    if (JoystickValue.x < 0)
-                    {
-                        Left = true;
-                    }
-
+                    MouseFlg = !MouseFlg;
                 }
-            }
-            //this.transform.forward += new Vector3(x *Time.deltaTime, 0, z *Time.deltaTime);
-
-            //this.transform.position += new Vector3(x * Time.deltaTime*PlayerMove, 0, z * Time.deltaTime*PlayerMove);
-            if (Input.GetKey("w"))
-            {
-                PlayerMoveFlg = true;
-                Up = true;
-            }
-            if (Input.GetKey("s"))
-            {
-                PlayerMoveFlg = true;
-                Down = true;
-            }
-            if (Input.GetKey("a"))
-            {
-                PlayerMoveFlg = true;
-                Left = true;
-            }
-            if (Input.GetKey("d"))
-            {
-                PlayerMoveFlg = true;
-                Right = true;
-            }
-            float step = 0;
-            step = RotateSpeed * Time.deltaTime;
-            if (Input.GetKeyDown(KeyCode.LeftShift))
-            {
-                DashFlg = true;
-            }
-            if (Input.GetKeyUp(KeyCode.LeftShift))
-            {
-                DashFlg = false;
-            }
-            if (!this.GetComponent<PlyerAnimator>().GetPlayerisAttacking()&& !this.GetComponent<PlyerAnimator>().GetPlayerisAttack2())
-            {
-                if (PlayerMoveFlg)
+                PlayerMoveFlg = false;
+                Right = false;
+                Left = false;
+                Up = false;
+                Down = false;
+                float CameraEulerY = TPSCamera.transform.eulerAngles.y;
+                Vector2 direction;
+                if (joystick)
                 {
-                    if (DashFlg)
+                    MouseFlg = true;
+
+                    JoystickValue.x = joystick.Horizontal;
+                    JoystickValue.y = joystick.Vertical;
+                    direction = joystick.Direction;
+                    if (JoystickValue.magnitude > 0.2f)
                     {
-                        transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
-                        //isDash = true;
+                        MouseFlg = false;
+                        PlayerMoveFlg = true;
+                        JoystickAngle = GetAngle(new Vector3(0, 0), JoystickValue);
+                        if (JoystickValue.y > 0)
+                        {
+                            Up = true;
+                        }
+                        if (JoystickValue.x > 0)
+                        {
+                            Right = true;
+                        }
+                        if (JoystickValue.y < 0)
+                        {
+                            Down = true;
+                        }
+                        if (JoystickValue.x < 0)
+                        {
+                            Left = true;
+                        }
+
                     }
-                    else
+                }
+                //this.transform.forward += new Vector3(x *Time.deltaTime, 0, z *Time.deltaTime);
+
+                //this.transform.position += new Vector3(x * Time.deltaTime*PlayerMove, 0, z * Time.deltaTime*PlayerMove);
+                if (Input.GetKey("w"))
+                {
+                    PlayerMoveFlg = true;
+                    Up = true;
+                }
+                if (Input.GetKey("s"))
+                {
+                    PlayerMoveFlg = true;
+                    Down = true;
+                }
+                if (Input.GetKey("a"))
+                {
+                    PlayerMoveFlg = true;
+                    Left = true;
+                }
+                if (Input.GetKey("d"))
+                {
+                    PlayerMoveFlg = true;
+                    Right = true;
+                }
+                float step = 0;
+                step = RotateSpeed * Time.deltaTime;
+                if (Input.GetKeyDown(KeyCode.LeftShift))
+                {
+                    DashFlg = true;
+                }
+                if (Input.GetKeyUp(KeyCode.LeftShift))
+                {
+                    DashFlg = false;
+                }
+                if (!this.GetComponent<PlyerAnimator>().GetPlayerisAttacking() && !this.GetComponent<PlyerAnimator>().GetPlayerisAttack2())
+                {
+                    if (PlayerMoveFlg)
                     {
-                        if (Input.GetKey(KeyCode.LeftShift))
+                        if (DashFlg)
                         {
                             transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
                             //isDash = true;
                         }
                         else
                         {
-                            //isDash = false;   
+                            if (Input.GetKey(KeyCode.LeftShift))
+                            {
+                                transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
+                                //isDash = true;
+                            }
+                            else
+                            {
+                                //isDash = false;   
+                            }
+                            transform.position += transform.forward * PlayerMove * Time.deltaTime;
                         }
-                        transform.position += transform.forward * PlayerMove * Time.deltaTime;
+                        //transform.rotation = Quaternion.RotateTowards(transform.rotation, PlayerDirect.transform.rotation, 1);
+
                     }
-                    //transform.rotation = Quaternion.RotateTowards(transform.rotation, PlayerDirect.transform.rotation, 1);
-
-                }
-            }
-            else
-            {
-                PlayerMoveFlg = false;
-            }
-
-
-
-            //
-            if (Up)
-            {
-                // transform.eulerAngles = new Vector3(0,CameraEulerY,0);
-                PlayerRotate = 0;
-            }
-            if (Down)
-            {
-                //transform.eulerAngles = new Vector3(0, CameraEulerY-180, 0);
-                PlayerRotate = -180;
-            }
-            if (Right)
-            {
-                //transform.eulerAngles = new Vector3(0, CameraEulerY+90, 0);
-                PlayerRotate = 90;
-            }
-            if (Left)
-            {
-                //transform.eulerAngles = new Vector3(0, CameraEulerY-90, 0);
-                PlayerRotate = -90;
-            }
-            if (Up && Right)
-            {
-                PlayerRotate = 45;
-                //transform.eulerAngles = new Vector3(0, CameraEulerY+ 45, 0);
-            }
-            if (Up && Left)
-            {
-                PlayerRotate = -45;
-                //transform.eulerAngles = new Vector3(0, CameraEulerY - 45, 0);
-            }
-            if (Down && Right)
-            {
-                PlayerRotate = 135;
-                //transform.eulerAngles = new Vector3(0, CameraEulerY + 135, 0);
-            }
-            if (Down && Left)
-            {
-                PlayerRotate = -135;
-                //transform.eulerAngles = new Vector3(0, CameraEulerY - 135, 0);
-            }
-            if (Input.GetKey("q"))
-            {
-                transform.eulerAngles += new Vector3(0, 1, 0);
-            }
-            PlayerRotateVar = -(CameraEulerY) + transform.eulerAngles.y - PlayerRotate;
-            if (PlayerRotateVar < -180)
-            {
-                PlayerRotateVar += 360;
-            }
-            if (PlayerRotateVar > 180)
-            {
-                PlayerRotateVar -= 360;
-            }
-            PlayerRotateVar = Mathf.Round(PlayerRotateVar);
-            //transform.eulerAngles = new Vector3(0,transform.eulerAngles.y*0.9f+(CameraEulerY+PlayerRotate)*0.1f , 0);
-            if (!(PlayerRotateVar == 0) && PlayerMoveFlg)
-            {
-                FixedAngle = new Vector3(0, -PlayerRotateVar * 0.1f, 0);
-                //transform.eulerAngles += FixedAngle;
-            }
-            if (!PlayerMoveFlg)
-            {
-                FixedAngle = new Vector3(0, 0, 0);
-            }
-            Sword.SetActive(true);
-            if (PlayerMoveFlg)
-            {
-                animator.SetBool("isWalk", true);
-                if (DashFlg)
-                {
-                    animator.SetBool("isRun", true);
-                    Sword.SetActive(false);
                 }
                 else
                 {
-                    animator.SetBool("isRun", false);
-                   
+                    PlayerMoveFlg = false;
                 }
-            }
-            else
-            {
-                animator.SetBool("isWalk", false);
-                animator.SetBool("isRun", false);
-            }
-            if(!this.GetComponent<PlyerAnimator>().GetPlayerisGrounnd())
-            {
-                Sword.SetActive(false);
-            }
 
 
 
+                //
+                if (Up)
+                {
+                    // transform.eulerAngles = new Vector3(0,CameraEulerY,0);
+                    PlayerRotate = 0;
+                }
+                if (Down)
+                {
+                    //transform.eulerAngles = new Vector3(0, CameraEulerY-180, 0);
+                    PlayerRotate = -180;
+                }
+                if (Right)
+                {
+                    //transform.eulerAngles = new Vector3(0, CameraEulerY+90, 0);
+                    PlayerRotate = 90;
+                }
+                if (Left)
+                {
+                    //transform.eulerAngles = new Vector3(0, CameraEulerY-90, 0);
+                    PlayerRotate = -90;
+                }
+                if (Up && Right)
+                {
+                    PlayerRotate = 45;
+                    //transform.eulerAngles = new Vector3(0, CameraEulerY+ 45, 0);
+                }
+                if (Up && Left)
+                {
+                    PlayerRotate = -45;
+                    //transform.eulerAngles = new Vector3(0, CameraEulerY - 45, 0);
+                }
+                if (Down && Right)
+                {
+                    PlayerRotate = 135;
+                    //transform.eulerAngles = new Vector3(0, CameraEulerY + 135, 0);
+                }
+                if (Down && Left)
+                {
+                    PlayerRotate = -135;
+                    //transform.eulerAngles = new Vector3(0, CameraEulerY - 135, 0);
+                }
+                if (Input.GetKey("q"))
+                {
+                    transform.eulerAngles += new Vector3(0, 1, 0);
+                }
+                PlayerRotateVar = -(CameraEulerY) + transform.eulerAngles.y - PlayerRotate;
+                if (PlayerRotateVar < -180)
+                {
+                    PlayerRotateVar += 360;
+                }
+                if (PlayerRotateVar > 180)
+                {
+                    PlayerRotateVar -= 360;
+                }
+                PlayerRotateVar = Mathf.Round(PlayerRotateVar);
+                //transform.eulerAngles = new Vector3(0,transform.eulerAngles.y*0.9f+(CameraEulerY+PlayerRotate)*0.1f , 0);
+                if (!(PlayerRotateVar == 0) && PlayerMoveFlg)
+                {
+                    FixedAngle = new Vector3(0, -PlayerRotateVar * 0.1f, 0);
+                    //transform.eulerAngles += FixedAngle;
+                }
+                if (!PlayerMoveFlg)
+                {
+                    FixedAngle = new Vector3(0, 0, 0);
+                }
+                Sword.SetActive(true);
+                if (PlayerMoveFlg)
+                {
+                    animator.SetBool("isWalk", true);
+                    if (DashFlg)
+                    {
+                        animator.SetBool("isRun", true);
+                        Sword.SetActive(false);
+                    }
+                    else
+                    {
+                        animator.SetBool("isRun", false);
+
+                    }
+                }
+                else
+                {
+                    animator.SetBool("isWalk", false);
+                    animator.SetBool("isRun", false);
+                }
+                if (!this.GetComponent<PlyerAnimator>().GetPlayerisGrounnd())
+                {
+                    Sword.SetActive(false);
+                }
+
+
+
+            }
         }
     }
     float GetAngle(Vector2 start, Vector2 target)
