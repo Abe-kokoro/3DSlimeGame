@@ -8,6 +8,8 @@ using Photon.Pun;
 using System.Diagnostics;
 using System;
 using TMPro;
+using Unity.VisualScripting;
+using Photon.Pun.Demo.Cockpit;
 
 public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
 {
@@ -64,7 +66,9 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     public bool isAttackChain = false;
     public bool isFinalAtk = false;
     public bool JumpFlg = false;
-    public bool isPC = false;
+   
+    public bool isDead = false;
+    public bool isRespwan = false;
     // 設置判定用ColliderCall.
     [SerializeField] ColliderCallReceiver footColliderCall = null;
     // 接地フラグ.
@@ -101,18 +105,23 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         
         HPslider.value =(float) CurrentStatus.Hp / (float)DefaultStatus.Hp;
         LvText.text = "Lv." + CurrentStatus.Lv;
-        //if (photonView.IsMine)
-        if (isPC)
+        if (photonView.IsMine&&!Menu.isMenu&& GameController.isPC)
+        //if (isPC)
         {
-            if (Input.GetMouseButtonDown(0)&&!isAttacking)
+            if (Input.GetMouseButtonDown(0))
             {
+                ButtonClicked();
                 //AttackAction();
-                AttackStart();
-                isAttackingMBUP = false;
+                //AttackStart();
+                //isAttackingMBUP = false;
+            }
+            if(Input.GetMouseButtonUp(0))
+            {
+                ButtonClickedUp();
             }
             if (Input.GetMouseButtonDown(1))
             {
-                AttackAction2();
+                //AttackAction2();
             }
 
             if (Input.GetKeyDown("space")||JumpFlg)
@@ -153,6 +162,38 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
             if (Input.GetKey("p"))
             {
                 PlayerLvUp(10);
+            }
+
+            if (CurrentStatus.Hp <= 0)
+            {
+                CurrentStatus.Hp = 0;
+                if (!isDead)
+                {
+                    isDead = true;
+                
+
+                
+                    animator.SetBool("isDead", true);
+                
+                }
+            }
+            else
+            {
+                //isDead = false;
+                //animator.SetBool("isDead", false);
+            }
+            if(isRespwan)
+            {
+                isDead = false;
+                animator.SetBool("isDead", false);
+                CurrentStatus.Hp = (int)((float)DefaultStatus.Hp * 0.8f);
+                if (CurrentStatus.Lv > 4)
+                {
+
+                    PlayerLvDown((int)((float)CurrentStatus.Lv*0.3f));
+                }
+                this.transform.position = new Vector3(PlayerController.resPos.x, PlayerController.resPos.y, PlayerController.resPos.z);
+                isRespwan = false;
             }
         }
     }
@@ -546,8 +587,17 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     public void PlayerLvUp(int UpValue)
     {
         PlayerLv += UpValue;
-        DefaultStatus.Power += UpValue * UnityEngine.Random.Range(6,9);
-        DefaultStatus.Hp += UpValue *100 + UpValue*UnityEngine.Random.Range(25, 50);
+        DefaultStatus.Power += UpValue * 3;
+        DefaultStatus.Hp += UpValue *25;
+        CurrentStatus.Power = DefaultStatus.Power;
+        CurrentStatus.Hp = DefaultStatus.Hp;
+        CurrentStatus.Lv = PlayerLv;
+    }
+    public void PlayerLvDown(int DownValue)
+    {
+        PlayerLv -= DownValue;
+        DefaultStatus.Power -= DownValue * 3;
+        DefaultStatus.Hp -= DownValue * 25;
         CurrentStatus.Power = DefaultStatus.Power;
         CurrentStatus.Hp = DefaultStatus.Hp;
         CurrentStatus.Lv = PlayerLv;
@@ -595,4 +645,14 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     {
         return LvUpCount;
     }
+    public void RespawnPlayer()
+    {
+        isRespwan = true;
+
+    }
+    void ResFlg()
+    {
+        
+    }
+    
 }

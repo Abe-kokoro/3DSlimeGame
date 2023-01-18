@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: -260360597218766173, guid: 0e0d58f65f96bf94fa200220e38a0ac5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -104,8 +104,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Player(1)
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e0d58f65f96bf94fa200220e38a0ac5, type: 2}
+  m_sharedMaterial: {fileID: -260360597218766173, guid: 0e0d58f65f96bf94fa200220e38a0ac5,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1260,7 +1261,8 @@ MonoBehaviour:
   isAttackChain: 0
   isFinalAtk: 0
   JumpFlg: 0
-  isPC: 0
+  isDead: 0
+  isRespwan: 0
   footColliderCall: {fileID: 2133262465}
 --- !u!114 &559980791
 MonoBehaviour:
@@ -1364,6 +1366,9 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 0
     Name: isFinalAtk
+  - Type: 4
+    SynchronizeType: 0
+    Name: isDead
   m_SynchronizeLayers:
   - SynchronizeType: 2
     LayerIndex: 0

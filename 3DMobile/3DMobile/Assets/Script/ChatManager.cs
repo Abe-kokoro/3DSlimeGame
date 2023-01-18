@@ -13,6 +13,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject PlayerController;
     [SerializeField] TextMeshProUGUI Chat;
     [SerializeField] private GameObject SendButton;
+    [SerializeField] Scrollbar scl;
     public static string PlayerName;
     bool Writing  = false;
     void Start()
@@ -30,6 +31,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
         if(Writing)
         {
             photonView.RPC(nameof(RPCUpdateChat), RpcTarget.AllBuffered, inputField.text);
+            
         }
         else
         {
@@ -54,7 +56,11 @@ public class ChatManager : MonoBehaviourPunCallbacks
     }
     private void Send()
     {
-        Writing = true;
+        if(!(inputField.text == "メッセージを入力..."))
+        {
+            Writing = true;
+        }
+        
     }
     [PunRPC]
     private void RPCUpdateChat(string ChatLog, PhotonMessageInfo info)
@@ -64,8 +70,8 @@ public class ChatManager : MonoBehaviourPunCallbacks
 
         inputField.text = "メッセージを入力...";
         Writing = false;
-       
-        
+        scl.value = 0;
+
     }
     
 

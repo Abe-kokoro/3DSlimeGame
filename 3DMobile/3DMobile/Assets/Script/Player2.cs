@@ -51,7 +51,7 @@ public class Player2 : MonoBehaviourPunCallbacks
     {
         if (!Menu.isMenu)
         {
-            if (photonView.IsMine)
+            if (photonView.IsMine&&!this.gameObject.GetComponent<PlyerAnimator>().isDead)
             {
                 if (Input.GetKeyDown("m"))
                 {

@@ -81,6 +81,7 @@ public class Menu : MonoBehaviour
     }
     public void Pause()
     {
+        
         //Time.timeScale = 0;  // éûä‘í‚é~
         pausePanel.SetActive(true);
         pauseButton.SetActive(false);
@@ -91,11 +92,12 @@ public class Menu : MonoBehaviour
         HintButton.SetActive(true);
         MapButton.SetActive(true);
         isMenu = true;
-        Gamecontroller.GetComponent<GameController>().SetIsMenu(true);
+        //Gamecontroller.GetComponent<GameController>().SetIsMenu(true);
     }
 
     public void Resume()
     {
+        
         //Time.timeScale = 1;  // çƒäJ
         pausePanel.SetActive(false);
         pauseButton.SetActive(true);
@@ -106,7 +108,7 @@ public class Menu : MonoBehaviour
         HintButton.SetActive(false);
         MapButton.SetActive(false);
         isMenu = false;
-        Gamecontroller.GetComponent<GameController>().SetIsMenu(false);
+       // Gamecontroller.GetComponent<GameController>().SetIsMenu(false);
     }
     private void ExitMenu()
     {
