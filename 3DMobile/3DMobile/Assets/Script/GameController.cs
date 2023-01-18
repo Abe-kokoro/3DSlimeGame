@@ -9,8 +9,9 @@ using System;
 public class GameController : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject menu;
-    [SerializeField] bool isPC  = false;
+    [SerializeField] public static bool isPC  = true;
     [SerializeField] bool isMenu;
+    [SerializeField] GameObject AndroidPanel;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,10 +21,18 @@ public class GameController : MonoBehaviourPunCallbacks
         //PhotonServerSettingsの設定内容を使って
         //マスターサーバーへ接続する
         PhotonNetwork.ConnectUsingSettings();
+
         if (isPC)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            AndroidPanel.SetActive(false);
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+            AndroidPanel.SetActive(true);
         }
     }
 
@@ -32,28 +41,36 @@ public class GameController : MonoBehaviourPunCallbacks
     {
         if (isPC)
         {
+
             if (Input.GetKeyDown("escape"))
             {
-                if (isMenu)
+                if (!Menu.isMenu)
                 {
+                    Cursor.lockState = CursorLockMode.Confined;
+                    Cursor.visible = true;
+                    menu.GetComponent<Menu>().Pause();
 
-                    menu.GetComponent<Menu>().Resume();
-                    isMenu = false;
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
+
+
 
                 }
                 else
                 {
-                    menu.GetComponent<Menu>().Pause();
-                    isMenu = true;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                    menu.GetComponent<Menu>().Resume();
 
 
-                    Cursor.lockState = CursorLockMode.Confined;
-                    Cursor.visible = true;
+
+
                 }
 
             }
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
         }
     }
     //マスターサーバーへの接続が成功した時に呼ばれるコールバック
@@ -61,21 +78,18 @@ public class GameController : MonoBehaviourPunCallbacks
     {
         //指定の名前の部屋に参加する
         //なければ作成して参加する
-        PhotonNetwork.JoinOrCreateRoom("RoomTTestATB01",new RoomOptions(),TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom("RoomSlimeBattle",new RoomOptions(),TypedLobby.Default);
     }
     
     //ゲームサーバーに接続が成功した時に呼ばれるコールバック関数
     public override void OnJoinedRoom()
     {
         //ランダムに自分のキャラを作成
-        var position = new Vector3(0, 5.0f, 0);
+        var position = PlayerController.resPos;
         //マルチプレイ実装まではコメントアウト
         //PhotonNetwork.Instantiate("Avator",position,Quaternion.identity);
         PhotonNetwork.Instantiate("Player",position,Quaternion.identity);
 
     }
-    public void SetIsMenu(bool isMenflg)
-    {
-        isMenu = isMenflg;
-    }
+    
 }

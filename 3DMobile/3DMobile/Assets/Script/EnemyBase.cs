@@ -84,7 +84,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         // 攻撃コライダーイベント登録.
         attackHitColliderCall.TriggerEnterEvent.AddListener(OnAttackTriggerEnter);
         DefaultStatus.Hp = 90 + EnemyLv * 12;
-        DefaultStatus.Power = 10+EnemyLv * 3;
+        DefaultStatus.Power = 20+EnemyLv * 7;
         // 最初に現在のステータスを基本ステータスとして設定.
         CurrentStatus.Hp = DefaultStatus.Hp;
         CurrentStatus.Power = DefaultStatus.Power;

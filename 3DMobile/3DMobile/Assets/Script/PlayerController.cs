@@ -15,16 +15,21 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [SerializeField] TextMeshProUGUI PlayerLevel;
     [SerializeField] GameObject Loading;
     [SerializeField] TextMeshProUGUI KillCount;
-    
+    [SerializeField] GameObject RespawnPos;
+    [SerializeField] GameObject DeadPanel;
+    public static Vector3 resPos;
     float PlayerCurrentHp;
     float PlayerMaxHp;
+    public bool isDead =  false;
     bool isPlayer = false;
     void Start()
     {
+        DeadPanel.SetActive(false);
         //DashButton.GetComponent<Button>().onClick.AddListener(Dash);
         JumpButton.GetComponent<Button>().onClick.AddListener(Jump);
         AttackButton.GetComponent<Button>().onClick.AddListener(Attack);
         Loading.SetActive(true);
+        resPos = new Vector3(RespawnPos.transform.position.x, RespawnPos.transform.position.y+5.0f, RespawnPos.transform.position.z);
     }
 
     // Update is called once per frame
@@ -53,6 +58,18 @@ public class PlayerController : MonoBehaviourPunCallbacks
             int Lv = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerLevel(); 
             PlayerLevel.text = "Lv."+Lv;
             KillCount.text ="ŽŸ‚ÌƒŒƒxƒ‹‚Ü‚Å"+ MinePlayer.GetComponent<PlyerAnimator>().GetKillCount()+"/"+MinePlayer.GetComponent<PlyerAnimator>().GetLvUpCount();
+            if(MinePlayer.GetComponent<PlyerAnimator>().isDead&&!isDead)
+            {
+                isDead = true;
+                Invoke("Dead", 3.0f);
+            }
+            if(isDead)
+            {
+                if(!MinePlayer.GetComponent<PlyerAnimator>().isDead)
+                {
+                    isDead = false; 
+                }
+            }
             //ƒ}ƒ‹ƒ`‚Ü‚Å
             // PlayerCurrentHp=MinePlayer.GetComponent<PlayerHpBar>().GetPlayerHP();
             // PlayerMaxHp = MinePlayer.GetComponent<PlayerHpBar>().GetMaxPlayerHP();
@@ -91,5 +108,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         return isPlayer;
     }
+    public void PlayerRespawn()
+    {
+        MinePlayer.gameObject.GetComponent<PlyerAnimator>().RespawnPlayer();
 
+    }
+    public void Dead()
+    {
+        
+        DeadPanel.SetActive(true);
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+    }
 }
