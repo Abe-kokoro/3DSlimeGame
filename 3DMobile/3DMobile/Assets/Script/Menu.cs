@@ -108,7 +108,12 @@ public class Menu : MonoBehaviour
         HintButton.SetActive(false);
         MapButton.SetActive(false);
         isMenu = false;
-       // Gamecontroller.GetComponent<GameController>().SetIsMenu(false);
+        if(GameController.isPC)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+       
     }
     private void ExitMenu()
     {

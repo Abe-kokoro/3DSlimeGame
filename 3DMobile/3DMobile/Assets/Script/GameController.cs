@@ -56,15 +56,28 @@ public class GameController : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                    menu.GetComponent<Menu>().Resume();
+                    
+                    
+                    //    Cursor.lockState = CursorLockMode.Locked;
+                    //    Cursor.visible = false;
+                    //
+                    //menu.GetComponent<Menu>().Resume();
 
 
 
 
                 }
 
+            }
+            if (Input.GetKey(KeyCode.LeftAlt))
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = true;
+            }
+            if(Input.GetKeyUp(KeyCode.LeftAlt))
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             }
         }
         else

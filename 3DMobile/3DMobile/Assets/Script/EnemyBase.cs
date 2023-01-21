@@ -172,9 +172,12 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     }
     void SetisRotate()
     {
-        isRotate = false;
-        NextRotateCoolTime = UnityEngine.Random.Range(8, 16);
-        RotateTimer = 0;
+        if (!isTrase)
+        {
+            isRotate = false;
+            NextRotateCoolTime = UnityEngine.Random.Range(8, 16);
+            RotateTimer = 0;
+        }
     }
     void OnSensorTriggerEnter(Collider other)
     {
@@ -193,7 +196,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     // ----------------------------------------------------------
     public void OnAttackHit(int damage,int dmgLevel,bool isMine,GameObject PlayerStatus)
     {
-        
+        attackTimer = 0f;
+
             CurrentStatus.Hp -= damage;
             
         Debug.Log("Hit Damage " + damage + "/CurrentHp = " + CurrentStatus.Hp);
