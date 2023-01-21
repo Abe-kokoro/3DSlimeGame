@@ -66,6 +66,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     public bool isAttackChain = false;
     public bool isFinalAtk = false;
     public bool JumpFlg = false;
+    public bool isHit = false;
+    [SerializeField] float NockBackRate = 50.0f;
    
     public bool isDead = false;
     public bool isRespwan = false;
@@ -497,6 +499,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         }
         else
         {
+            OnHit();
             //UnityEngine.Debug.Log(damage + "のダメージを食らった!!残りHP" + CurrentStatus.Hp);
         }
     }
@@ -521,6 +524,20 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
             UnityEngine.Debug.Log("HPを" + HealValue + "回復した!!残りHP" + CurrentStatus.Hp);
             HPslider.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
         }
+    }
+
+    void OnHit()
+    {
+        if(UnityEngine.Random.Range(0.0f,100.0f)<NockBackRate)
+        {
+            animator.SetBool("isHit", true);
+            isHit = true;
+        }
+    }
+    void OnHitEnd()
+    {
+        animator.SetBool("isHit", false);
+        isHit = false;
     }
     // ---------------------------------------------------------------------
     /// <summary>
@@ -650,9 +667,4 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         isRespwan = true;
 
     }
-    void ResFlg()
-    {
-        
-    }
-    
 }

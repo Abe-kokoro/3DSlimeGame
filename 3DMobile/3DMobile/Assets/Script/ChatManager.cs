@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+using System;
 public class ChatManager : MonoBehaviourPunCallbacks
 {
     //オブジェクトと結びつける
@@ -14,6 +17,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
     [SerializeField] TextMeshProUGUI Chat;
     [SerializeField] private GameObject SendButton;
     [SerializeField] Scrollbar scl;
+    bool isSclSelect = false;
     public static string PlayerName;
     bool Writing  = false;
     void Start()
@@ -28,18 +32,52 @@ public class ChatManager : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
+        
+
+        
         if(Writing)
         {
             photonView.RPC(nameof(RPCUpdateChat), RpcTarget.AllBuffered, inputField.text);
-            
+            scl.value = 0.0f;
         }
         else
         {
-            text.text = Chat.text;
+            if(text.text ==Chat.text)
+            {
+
+            }
+            else
+            {
+
+                
+                text.text = Chat.text;
+                
+            }
+            if(!isSclSelect)
+            {
+                scl.value = 0.0f;
+            }
         }
 
+        
+
     }
-    
+    public void ValueChanged()
+    {
+        if (Input.GetKeyDown("enter"))
+        {
+            SendButton.GetComponent<Button>().Select();
+        }
+            
+
+    }
+    public void EndEdit()
+    {
+        
+            SendButton.GetComponent<Button>().Select();
+        
+    }
+
     public void InputText()
     {
 
@@ -56,11 +94,19 @@ public class ChatManager : MonoBehaviourPunCallbacks
     }
     private void Send()
     {
-        if(!(inputField.text == "メッセージを入力..."))
+        if(!(inputField.text == "メッセージを入力...")&&!(inputField.text == ""))
         {
             Writing = true;
         }
-        
+        inputField.Select();
+    }
+    public void SelectScl()
+    {
+        isSclSelect = true;
+    }
+    public void DeselectScl()
+    {
+        isSclSelect = false;
     }
     [PunRPC]
     private void RPCUpdateChat(string ChatLog, PhotonMessageInfo info)
@@ -70,9 +116,10 @@ public class ChatManager : MonoBehaviourPunCallbacks
 
         inputField.text = "メッセージを入力...";
         Writing = false;
-        scl.value = 0;
+        scl.value = 0.0f;
 
     }
+    
     
 
 }
