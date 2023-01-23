@@ -49,7 +49,7 @@ Material:
     - _PathSet0ifyouuseinPS: 0
     - _Usedepth: 0
     m_Colors:
-    - _AddColor: {r: 1, g: 0.9900737, b: 0.19496846, a: 0}
+    - _AddColor: {r: 1, g: 1, b: 1, a: 0}
     - _Remap: {r: -0.3, g: 1, b: 0, a: 0}
     - _SpeedMainTexUVNoiseZW: {r: 0, g: 0, b: 0.8, a: 0}
     - _TintColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}

@@ -17,6 +17,8 @@ public class ChatManager : MonoBehaviourPunCallbacks
     [SerializeField] TextMeshProUGUI Chat;
     [SerializeField] private GameObject SendButton;
     [SerializeField] Scrollbar scl;
+    [SerializeField] bool isUI = false;
+    [SerializeField] GameObject chatview;
     bool isSclSelect = false;
     public static string PlayerName;
     bool Writing  = false;
@@ -58,7 +60,19 @@ public class ChatManager : MonoBehaviourPunCallbacks
                 scl.value = 0.0f;
             }
         }
+        if(isUI)
+        {
+            
+            if (text.text == "")
+            {
+                chatview.gameObject.SetActive(false);
+            }
+            else
+            {
+                chatview.gameObject.SetActive(true);
 
+            }
+        }
         
 
     }
