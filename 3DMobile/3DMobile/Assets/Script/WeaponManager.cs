@@ -24,7 +24,7 @@ public class WeaponManager : MonoBehaviour
             Destroy(child.gameObject);
         }
         GameObject obj = (GameObject)Resources.Load("Sword_02");
-        Instantiate(obj, LHand.transform);
+        //Instantiate(obj, LHand.transform);
 
     }
 
