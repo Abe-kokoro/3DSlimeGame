@@ -13,7 +13,7 @@ public class Player2 : MonoBehaviourPunCallbacks
     [SerializeField] private float PlayerMove;
     [SerializeField] private Vector2 JoystickValue;
     [SerializeField] private GameObject TPSCamera;
-    [SerializeField] private bool PlayerMoveFlg = false;
+    [SerializeField] public bool PlayerMoveFlg = false;
     [SerializeField] GameObject Sword;
     private Rigidbody RB;
     public bool AttackFlg = false;
@@ -45,6 +45,37 @@ public class Player2 : MonoBehaviourPunCallbacks
     private void FixedUpdate()
     {
               transform.eulerAngles += FixedAngle;
+        if (!this.GetComponent<PlyerAnimator>().GetPlayerisAttacking() && !this.GetComponent<PlyerAnimator>().GetPlayerisAttack2() && !this.GetComponent<PlyerAnimator>().isWeaponSwitching)
+        {
+            if (PlayerMoveFlg)
+            {
+                if (DashFlg)
+                {
+                    transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
+                    //isDash = true;
+                }
+                else
+                {
+                    if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
+                        //isDash = true;
+                    }
+                    else
+                    {
+                        //isDash = false;   
+                    }
+                    transform.position += transform.forward * PlayerMove * Time.deltaTime;
+                }
+                //transform.rotation = Quaternion.RotateTowards(transform.rotation, PlayerDirect.transform.rotation, 1);
+
+            }
+        }
+        else
+        {
+            PlayerMoveFlg = false;
+        }
+
     }
     // Update is called once per frame
     void Update()
@@ -128,36 +159,36 @@ public class Player2 : MonoBehaviourPunCallbacks
                 {
                     DashFlg = false;
                 }
-                if (!this.GetComponent<PlyerAnimator>().GetPlayerisAttacking() && !this.GetComponent<PlyerAnimator>().GetPlayerisAttack2())
-                {
-                    if (PlayerMoveFlg)
-                    {
-                        if (DashFlg)
-                        {
-                            transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
-                            //isDash = true;
-                        }
-                        else
-                        {
-                            if (Input.GetKey(KeyCode.LeftShift))
-                            {
-                                transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
-                                //isDash = true;
-                            }
-                            else
-                            {
-                                //isDash = false;   
-                            }
-                            transform.position += transform.forward * PlayerMove * Time.deltaTime;
-                        }
-                        //transform.rotation = Quaternion.RotateTowards(transform.rotation, PlayerDirect.transform.rotation, 1);
+                //if (!this.GetComponent<PlyerAnimator>().GetPlayerisAttacking() && !this.GetComponent<PlyerAnimator>().GetPlayerisAttack2()&&!this.GetComponent<PlyerAnimator>().isWeaponSwitching)
+                //{
+                //    if (PlayerMoveFlg)
+                //    {
+                //        if (DashFlg)
+                //        {
+                //            transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
+                //            //isDash = true;
+                //        }
+                //        else
+                //        {
+                //            if (Input.GetKey(KeyCode.LeftShift))
+                //            {
+                //                transform.position += transform.forward * PlayerMove * 2.0f * Time.deltaTime;
+                //                //isDash = true;
+                //            }
+                //            else
+                //            {
+                //                //isDash = false;   
+                //            }
+                //            transform.position += transform.forward * PlayerMove * Time.deltaTime;
+                //        }
+                //        //transform.rotation = Quaternion.RotateTowards(transform.rotation, PlayerDirect.transform.rotation, 1);
 
-                    }
-                }
-                else
-                {
-                    PlayerMoveFlg = false;
-                }
+                //    }
+                //}
+                //else
+                //{
+                //    PlayerMoveFlg = false;
+                //}
 
 
 
