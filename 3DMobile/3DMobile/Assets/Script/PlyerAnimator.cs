@@ -74,8 +74,12 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     // 設置判定用ColliderCall.
     [SerializeField] ColliderCallReceiver footColliderCall = null;
     // 接地フラグ.
-    bool isGround = false;
-    
+    public bool isGround = false;
+    [SerializeField] float RelaxCount = 0f;
+    [SerializeField] float RelaxTime = 5f;
+    public bool isRelax = false;
+    public bool isFight = true;
+    public bool isWeaponSwitching = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -110,6 +114,19 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         if (photonView.IsMine&&!Menu.isMenu&& GameController.isPC)
         //if (isPC)
         {
+            if(isFight)
+            RelaxCount += Time.deltaTime;
+            if (RelaxCount > RelaxTime)
+            {
+                RelaxCount = 0.0f;
+                animator.SetBool("isRelax", true);
+                isWeaponSwitching = true;
+                isFight = false;
+            }
+            if(this.gameObject.GetComponent<Player2>().PlayerMoveFlg)
+            {
+                RelaxCount = 0.0f;
+            }
             if (Input.GetMouseButtonDown(0))
             {
                 ButtonClicked();
@@ -567,24 +584,50 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     {
         return isGround;
     }
+    void SwordToRelaxEnd()
+    {
+        isWeaponSwitching = false;
+        isRelax = true;
+    }
+    void RelaxTorSword()
+    {
+        isRelax = false;
+    }
+    void RelaxToSwordEnd()
+    {
+        isWeaponSwitching = false;
+    }
     public void ButtonClicked()
     {
-        if (isGround)
+        RelaxCount = 0.0f;
+        if (isRelax)
         {
-            //isAttacking = true;
-            AttackStart();
-            //isAttackingMBUP = false;
-            if (isAttackingMBUP)
-            {
-                isAttackChain = true;
-                animator.SetBool("isAttackChain", true);
-                isAttackingMBUP = false;
-            }
+            isWeaponSwitching = true;
+            //isRelax = false;
+            
+            animator.SetBool("isRelax", false);
+            isFight = true;
         }
         else
         {
-            AttackAction2();
+            if (isGround)
+            {
+                //isAttacking = true;
+                AttackStart();
+                //isAttackingMBUP = false;
+                if (isAttackingMBUP)
+                {
+                    isAttackChain = true;
+                    animator.SetBool("isAttackChain", true);
+                    isAttackingMBUP = false;
+                }
+            }
+            else
+            {
+                AttackAction2();
+            }
         }
+       
     }
     public void ButtonClickedUp()
     {

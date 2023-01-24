@@ -7,6 +7,8 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] GameObject RHand;
     [SerializeField] GameObject LHand;
     [SerializeField] GameObject Sword;
+    [SerializeField] GameObject Back;
+    PlyerAnimator Animator;
     bool GenerateFlg;
     // Start is called before the first frame update
     void Start()
@@ -25,12 +27,48 @@ public class WeaponManager : MonoBehaviour
         }
         GameObject obj = (GameObject)Resources.Load("Sword_02");
         //Instantiate(obj, LHand.transform);
-
+        Animator = this.GetComponent<PlyerAnimator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(Animator.isGround)
+        {
+            
+            if(Animator.isRelax)
+            {
+                RHand.SetActive(false);
+                LHand.SetActive(false);
+                Back.SetActive(true);
+            }
+            else
+            {
+                RHand.SetActive(true);
+                LHand.SetActive(true);
+                Back.SetActive(false);
+                if(this.gameObject.GetComponent<Player2>().DashFlg&& this.gameObject.GetComponent<Player2>().PlayerMoveFlg)
+                {
+                    RHand.SetActive(false);
+                    LHand.SetActive(false);
+                    Back.SetActive(true);
+                }
+            }
+        }
+        else
+        {
+            if (Animator.isAttack2)
+            {
+                RHand.SetActive(true);
+                LHand.SetActive(true);
+            }
+            else
+            {
+                RHand.SetActive(false);
+                LHand.SetActive(false);
+            }
+
+        }
         
     }
 }
