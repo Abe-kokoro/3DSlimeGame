@@ -16,6 +16,14 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     [SerializeField] private string PlayerName;
     [SerializeField, Range(1, 100)]
     int PlayerLv;
+    public enum AttackElement
+    {
+        ELEMENT_NORMAL,
+        ELEMENT_FIRE,
+        ELEMENT_LEAF,
+        ELEMENT_WATER,
+        MAX
+    }
     // -------------------------------------------------------
     /// <summary>
     /// ステータス.
@@ -29,7 +37,9 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         public int Hp = 10;
         // 攻撃力.
         public int Power = 1;
+        public int Element = 0;
     }
+    
     //HPBar slider
     public Slider HPslider;
     public TextMeshProUGUI LvText;
@@ -114,19 +124,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         if (photonView.IsMine&&!Menu.isMenu&& GameController.isPC)
         //if (isPC)
         {
-            if(isFight)
-            RelaxCount += Time.deltaTime;
-            if (RelaxCount > RelaxTime)
-            {
-                RelaxCount = 0.0f;
-                animator.SetBool("isRelax", true);
-                isWeaponSwitching = true;
-                isFight = false;
-            }
-            if(this.gameObject.GetComponent<Player2>().PlayerMoveFlg)
-            {
-                RelaxCount = 0.0f;
-            }
+            
             if (Input.GetMouseButtonDown(0))
             {
                 ButtonClicked();
@@ -174,6 +172,19 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         }
         if (photonView.IsMine)
         {
+            if (isFight)
+                RelaxCount += Time.deltaTime;
+            if (RelaxCount > RelaxTime)
+            {
+                RelaxCount = 0.0f;
+                animator.SetBool("isRelax", true);
+                isWeaponSwitching = true;
+                isFight = false;
+            }
+            if (this.gameObject.GetComponent<Player2>().PlayerMoveFlg)
+            {
+                RelaxCount = 0.0f;
+            }
             if (Input.GetKeyDown("u"))
             {
                 PlayerLvUp(1);
@@ -213,6 +224,18 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
                 }
                 this.transform.position = new Vector3(PlayerController.resPos.x, PlayerController.resPos.y, PlayerController.resPos.z);
                 isRespwan = false;
+            }
+            if(Input.GetKeyDown("f"))
+            {
+                SetPlayerElement(AttackElement.ELEMENT_FIRE);
+            }
+            if (Input.GetKeyDown("g"))
+            {
+                SetPlayerElement(AttackElement.ELEMENT_LEAF);
+            }
+            if (Input.GetKeyDown("h"))
+            {
+                SetPlayerElement(AttackElement.ELEMENT_WATER);
             }
         }
     }
@@ -599,6 +622,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     }
     public void ButtonClicked()
     {
+        isFight = true;
         RelaxCount = 0.0f;
         if (isRelax)
         {
@@ -606,7 +630,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
             //isRelax = false;
             
             animator.SetBool("isRelax", false);
-            isFight = true;
+            
         }
         else
         {
@@ -709,5 +733,13 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     {
         isRespwan = true;
 
+    }
+    public int GetPlayerElement()
+    {
+        return CurrentStatus.Element;
+    }
+    public void SetPlayerElement(AttackElement element)
+    {
+        CurrentStatus.Element = (int)element;
     }
 }
