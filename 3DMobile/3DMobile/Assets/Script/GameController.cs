@@ -9,9 +9,10 @@ using System;
 public class GameController : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject menu;
-    [SerializeField] public static bool isPC  = true;
+    [SerializeField] public static bool isPC  = false;
     [SerializeField] bool isMenu;
     [SerializeField] GameObject AndroidPanel;
+    [SerializeField] GameObject ChatPanel; 
     // Start is called before the first frame update
     void Start()
     {
@@ -27,12 +28,14 @@ public class GameController : MonoBehaviourPunCallbacks
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             AndroidPanel.SetActive(false);
+            ChatPanel.SetActive(true);
         }
         else
         {
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
             AndroidPanel.SetActive(true);
+            ChatPanel.SetActive(false);
         }
     }
 
