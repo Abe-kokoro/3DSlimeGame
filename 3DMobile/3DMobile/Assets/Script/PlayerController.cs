@@ -7,7 +7,7 @@ using TMPro;
 public class PlayerController : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
-    [SerializeField] GameObject MinePlayer;
+    [SerializeField] public GameObject MinePlayer;
     [SerializeField] GameObject DashButton;
     [SerializeField] GameObject JumpButton;
     [SerializeField] GameObject AttackButton;
@@ -52,10 +52,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
         {
             Loading.SetActive(false);
             isPlayer = true;
-            PlayerCurrentHp = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerHP().x;
-            PlayerMaxHp = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerHP().y;
+            PlayerCurrentHp = MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.Hp;
+            PlayerMaxHp = MinePlayer.GetComponent<PlyerAnimator>().DefaultStatus.Hp;
             PlayerHPSlider.value = PlayerCurrentHp / PlayerMaxHp;
-            int Lv = MinePlayer.GetComponent<PlyerAnimator>().GetPlayerLevel(); 
+            int Lv = MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.Lv; 
             PlayerLevel.text = "Lv."+Lv;
             KillCount.text ="ŽŸ‚ÌƒŒƒxƒ‹‚Ü‚Å"+ MinePlayer.GetComponent<PlyerAnimator>().GetKillCount()+"/"+MinePlayer.GetComponent<PlyerAnimator>().GetLvUpCount();
             if(MinePlayer.GetComponent<PlyerAnimator>().isDead&&!isDead)

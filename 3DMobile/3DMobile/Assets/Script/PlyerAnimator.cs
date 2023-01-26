@@ -10,9 +10,20 @@ using System;
 using TMPro;
 using Unity.VisualScripting;
 using Photon.Pun.Demo.Cockpit;
-
+using System.IO;
 public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
 {
+    [System.Serializable]
+    public class PlayerSaveData
+    {
+        public string PlayerName;
+        public int Lv;
+        public int CurrentHP;
+        public int DefaultHP;
+        public int Atk;
+    }
+
+
     [SerializeField] private string PlayerName;
     [SerializeField, Range(1, 100)]
     int PlayerLv;
@@ -54,7 +65,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     // 攻撃HitオブジェクトのColliderCall.
     [SerializeField] ColliderCallReceiver attackHitCall = null;
     // 基本ステータス.
-    [SerializeField] Status DefaultStatus = new Status();
+    [SerializeField] public Status DefaultStatus = new Status();
     [SerializeField]public int LvUpCount = 0;
     [SerializeField]public int EnemyKillCount = 0;
     // 現在のステータス.
@@ -105,19 +116,42 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         // 攻撃判定用コライダーイベント登録.
         attackHitCall.TriggerEnterEvent.AddListener(OnAttackHitTriggerEnter);
         DefaultStatus.Lv = 1;
-        DefaultStatus.Hp = 1000;
+        
         DefaultStatus.Power = 10;
-        // 現在のステータスの初期化.
-        CurrentStatus.Lv = DefaultStatus.Lv;
-        CurrentStatus.Hp = DefaultStatus.Hp;
-        CurrentStatus.Power = DefaultStatus.Power;
+        if (!TitleManager.LoadDataflg)
+        {
+            // 現在のステータスの初期化.
+            DefaultStatus.Hp = 1000;
+            CurrentStatus.Lv = DefaultStatus.Lv;
+            CurrentStatus.Hp = DefaultStatus.Hp;
+            CurrentStatus.Power = DefaultStatus.Power;
+            
+
+        }
         HPslider.value = 1;
-        LvUpCount = 3+CurrentStatus.Lv * 2;
+        LvUpCount = 3 + CurrentStatus.Lv * 2;
     }
 
     // Update is called once per frame
     void Update()
     {
+        DefaultStatus.Hp = 975+CurrentStatus.Lv * 25;
+        CurrentStatus.Power = 10+CurrentStatus.Lv * 3;
+        
+        LvUpCount = 3 + CurrentStatus.Lv * 2;
+        if (photonView.IsMine&&!GameController.Loaded)
+        {
+            
+             if (TitleManager.LoadDataflg)
+             {
+                 PlayerSaveData PlayerLoadData = loadPlayerData();
+                 CurrentStatus.Lv = PlayerLoadData.Lv;
+                 CurrentStatus.Hp = PlayerLoadData.CurrentHP;
+                 DefaultStatus.Hp = PlayerLoadData.DefaultHP;
+                 CurrentStatus.Power = PlayerLoadData.Atk;
+                 GameController.Loaded = true;
+             }
+        }
         
         HPslider.value =(float) CurrentStatus.Hp / (float)DefaultStatus.Hp;
         LvText.text = "Lv." + CurrentStatus.Lv;
@@ -237,6 +271,11 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
             {
                 SetPlayerElement(AttackElement.ELEMENT_WATER);
             }
+            if(Input.GetKeyDown("i"))
+            {
+                SavePlayerData();
+            }
+            
         }
     }
     // ---------------------------------------------------------------------
@@ -670,21 +709,24 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
 
     public void PlayerLvUp(int UpValue)
     {
-        PlayerLv += UpValue;
-        DefaultStatus.Power += UpValue * 3;
-        DefaultStatus.Hp += UpValue *25;
-        CurrentStatus.Power = DefaultStatus.Power;
+        DefaultStatus.Hp = 1000 + CurrentStatus.Lv * 25;
+        CurrentStatus.Power = 10 + CurrentStatus.Lv * 3;
         CurrentStatus.Hp = DefaultStatus.Hp;
-        CurrentStatus.Lv = PlayerLv;
+        //PlayerLv += UpValue;
+        //DefaultStatus.Power += UpValue * 3;
+        //DefaultStatus.Hp += UpValue *25;
+        //CurrentStatus.Power = DefaultStatus.Power;
+        //CurrentStatus.Hp = DefaultStatus.Hp;
+        CurrentStatus.Lv += UpValue;
     }
     public void PlayerLvDown(int DownValue)
     {
-        PlayerLv -= DownValue;
-        DefaultStatus.Power -= DownValue * 3;
-        DefaultStatus.Hp -= DownValue * 25;
-        CurrentStatus.Power = DefaultStatus.Power;
-        CurrentStatus.Hp = DefaultStatus.Hp;
-        CurrentStatus.Lv = PlayerLv;
+        //PlayerLv -= DownValue;
+        //DefaultStatus.Power -= DownValue * 3;
+        //DefaultStatus.Hp -= DownValue * 25;
+        //CurrentStatus.Power = DefaultStatus.Power;
+        //CurrentStatus.Hp = DefaultStatus.Hp;
+        CurrentStatus.Lv -= PlayerLv;
     }
     public int GetPlayerLevel()
     {
@@ -699,6 +741,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(CurrentStatus.Hp);
             stream.SendNext(CurrentStatus.Power);
             stream.SendNext(CurrentStatus.Lv);
+            stream.SendNext(CurrentStatus.Element);
             stream.SendNext(DefaultStatus.Hp);
             stream.SendNext(DefaultStatus.Power);
             stream.SendNext(DefaultStatus.Lv);
@@ -711,6 +754,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
             CurrentStatus.Hp = (int)stream.ReceiveNext();
             CurrentStatus.Power = (int)stream.ReceiveNext();
             CurrentStatus.Lv = (int)stream.ReceiveNext();
+            CurrentStatus.Element = (int)stream.ReceiveNext();
             DefaultStatus.Hp = (int)stream.ReceiveNext();
             DefaultStatus.Power = (int)stream.ReceiveNext();
             DefaultStatus.Lv = (int)stream.ReceiveNext();
@@ -741,5 +785,52 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     public void SetPlayerElement(AttackElement element)
     {
         CurrentStatus.Element = (int)element;
+    }
+    public void SavePlayerData()
+    {
+        if(photonView.IsMine)
+        {
+            PlayerSaveData playerData = new PlayerSaveData();
+            playerData.PlayerName = PlayerName;
+            playerData.Lv = CurrentStatus.Lv;
+            playerData.CurrentHP = CurrentStatus.Hp;
+            playerData.DefaultHP = DefaultStatus.Hp;
+
+            playerData.Atk = CurrentStatus.Power;
+
+            string jsonstr = JsonUtility.ToJson(playerData);
+
+            StreamWriter writer;
+
+            SafeCreateDirectory("/");
+            writer = new StreamWriter(Application.persistentDataPath + "/savedata.json", false);
+            writer.Write(jsonstr);
+            writer.Flush();
+            writer.Close();
+
+        }
+
+        //PlayerSaveData player2 = JsonUtility.FromJson<PlayerSaveData>(jsonstr);
+
+    }
+
+    public PlayerSaveData loadPlayerData()
+    {
+        string datastr = "";
+        StreamReader reader;
+        reader = new StreamReader(Application.persistentDataPath + "/savedata.json");
+        datastr = reader.ReadToEnd();
+        reader.Close();
+
+        return JsonUtility.FromJson<PlayerSaveData>(datastr);
+    }
+    public static DirectoryInfo SafeCreateDirectory(string path)
+    {
+        //ディレクトリが存在しているかの確認 なければ生成
+        if (Directory.Exists(path))
+        {
+            return null;
+        }
+        return Directory.CreateDirectory(path);
     }
 }
