@@ -2091,7 +2091,7 @@ MonoBehaviour:
   footColliderCall: {fileID: 2133262465}
   isGround: 0
   RelaxCount: 0
-  RelaxTime: 5
+  RelaxTime: 10
   isRelax: 0
   isFight: 1
   isWeaponSwitching: 0

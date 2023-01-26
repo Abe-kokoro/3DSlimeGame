@@ -71,6 +71,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     bool isRotate = false;
     // UŒ‚ŽžŠÔŒv‘ª—p.
     float attackTimer = 0f;
+    float timer = 0;
     [SerializeField]float RotateTimer = 0f;
     [SerializeField]float NextRotateCoolTime = 3f;
     [SerializeField] GameObject DmgText;
@@ -104,6 +105,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         //DmgText.SetActive(false);
         NextRotateCoolTime = UnityEngine.Random.Range(8, 16);
         TrasePlayer = null;
+
     }
     void Update()
     {
@@ -149,7 +151,15 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
                 if (RotateTimer >= NextRotateCoolTime)
                 {
                     isRotate = true;
-                    Invoke("SetisRotate",2.5f);
+                    
+                    timer += Time.deltaTime;
+                    if(timer>2.5f)
+                    {
+                        NextRotateCoolTime = UnityEngine.Random.Range(8, 16);
+                        RotateTimer = 0;
+                        isRotate = false;
+                    }
+                    //Invoke("SetisRotate",2.5f);
                     // ‰ñ“]
                     this.transform.RotateTo(new Vector3(0, UnityEngine.Random.Range(0, 360)-180, 0), 2.5f, EasingTypes.BackIn);
                     //this.transform.eulerAngles = new Vector3(0, this.transform.eulerAngles.y + UnityEngine.Random.Range(30, 270), 0);

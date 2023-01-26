@@ -29,6 +29,7 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject ExitCancelButton;
     [SerializeField] private GameObject ExitTrueButton;
     [SerializeField] private GameObject Gamecontroller;
+    [SerializeField] private PlayerController Pcontroller;
     [SerializeField] bool PauseFlg = false;
     public static bool isMenu = false;
     bool isButtonUp = false;
@@ -127,6 +128,7 @@ public class Menu : MonoBehaviour
     }
     private void ExitGame()
     {
+        Pcontroller.MinePlayer.GetComponent<PlyerAnimator>().SavePlayerData();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;//ゲームプレイ終了
 #else
@@ -157,7 +159,7 @@ public class Menu : MonoBehaviour
 
     private void MapView()
     {
-
+        Pcontroller.MinePlayer.GetComponent<PlyerAnimator>().SavePlayerData();
     }
     public bool GetPauseFlg()
     {
