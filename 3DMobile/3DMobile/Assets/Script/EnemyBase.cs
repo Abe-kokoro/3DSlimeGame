@@ -11,6 +11,8 @@ using Photon.Pun.Demo.PunBasics;
 
 public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
 {
+    
+
     [SerializeField, Range(1, 1000)]
     int EnemyLv;
     //! 攻撃判定用コライダーコール.
@@ -23,6 +25,15 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] GameObject TrasePlayer = null;
     // アニメーター.
     Animator animator = null;
+    public enum EnemyElement
+    {
+        ELEMENT_NORMAL,
+        ELEMENT_FIRE,
+        ELEMENT_LEAF,
+        ELEMENT_WATER,
+        ELEMENT_METAL,
+        MAX
+    }
     // ----------------------------------------------------------
     /// <summary>
     /// ステータス.
@@ -39,7 +50,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         public bool isAlive = true;
         public float DefaultSpeed = 1.0f;
         public float TraseSpeed = 8.0f;
-
+        public int Element = 0; 
     }
 
     // 基本ステータス.
@@ -194,14 +205,82 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     /// </summary>
     /// <param name="damage"> 食らったダメージ. </param>
     // ----------------------------------------------------------
-    public void OnAttackHit(int damage,int dmgLevel,bool isMine,GameObject PlayerStatus)
+    public void OnAttackHit(int damage, int dmgLevel, bool isMine, GameObject PlayerStatus)
     {
         attackTimer = 0f;
 
-            CurrentStatus.Hp -= damage;
-            
+        
+        
+        
         Debug.Log("Hit Damage " + damage + "/CurrentHp = " + CurrentStatus.Hp);
-        DmgText.GetComponent<TextMeshProUGUI>().text = ""+damage;
+        int DmgElement = PlayerStatus.GetComponent<PlyerAnimator>().CurrentStatus.Element;
+        if (DmgElement == 0)//Normal
+        {
+            DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(1,1,1,1);
+            
+        }
+        else if(DmgElement == 1)//Fire
+        {
+            DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(1, 0, 0, 1);
+            if(CurrentStatus.Element == DmgElement)
+            {
+                damage = 0;
+                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
+            }
+            if(CurrentStatus.Element == 2)
+            {
+                damage *=2;
+            }
+            if(CurrentStatus.Element == 3)
+            {
+                damage = damage / 2;
+            }
+        }
+        else if (DmgElement == 2)//Leaf
+        {
+            DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0, 1, 0, 1);
+            if(CurrentStatus.Element == DmgElement)
+            {
+                damage = 0;
+                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
+            }
+            if(CurrentStatus.Element ==1)
+            {
+                damage  = damage/ 2;
+            }
+            if(CurrentStatus.Element == 3)
+            {
+                damage *= 2;
+            }
+        }
+        else if (DmgElement == 3)//Water
+        {
+            DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0, 0, 1, 1);
+            if (CurrentStatus.Element == DmgElement)
+            {
+                damage = 0;
+                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
+            }
+            if (CurrentStatus.Element == 1)
+            {
+                damage *= 2;
+            }
+            if (CurrentStatus.Element == 2)
+            {
+                damage = damage/2;
+            }
+        }
+
+        CurrentStatus.Hp -= damage;
+        if(damage>0)
+        {
+            DmgText.GetComponent<TextMeshProUGUI>().text = "" + damage;
+        }
+        if(damage == 0)
+        {
+            DmgText.GetComponent<TextMeshProUGUI>().text = "無効";
+        }
+
         DmgText.transform.localPosition = new Vector3(UnityEngine.Random.Range(-100,100),10,0);
         Instantiate(DmgText, EnemyCanvas);
         //Invoke("ClearDmg(DmgText)", 1);
