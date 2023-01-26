@@ -1513,6 +1513,7 @@ MonoBehaviour:
     isAlive: 1
     DefaultSpeed: 1
     TraseSpeed: 6
+    Element: 2
   CurrentStatus:
     Lv: 1
     Hp: 10
@@ -1520,6 +1521,7 @@ MonoBehaviour:
     isAlive: 1
     DefaultSpeed: 1
     TraseSpeed: 6
+    Element: 2
   aroundColliderCall: {fileID: 760692083}
   AtkColliderCall: {fileID: 31064851}
   SensorColliderCall: {fileID: 1413438620}
