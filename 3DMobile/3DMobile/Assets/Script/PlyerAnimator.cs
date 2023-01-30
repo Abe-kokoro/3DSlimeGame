@@ -21,6 +21,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         public int CurrentHP;
         public int DefaultHP;
         public int Atk;
+        public Vector3 Pos;
     }
 
 
@@ -149,6 +150,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
                  CurrentStatus.Hp = PlayerLoadData.CurrentHP;
                  DefaultStatus.Hp = PlayerLoadData.DefaultHP;
                  CurrentStatus.Power = PlayerLoadData.Atk;
+                 this.transform.position = PlayerLoadData.Pos;
                  GameController.Loaded = true;
              }
         }
@@ -795,7 +797,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
             playerData.Lv = CurrentStatus.Lv;
             playerData.CurrentHP = CurrentStatus.Hp;
             playerData.DefaultHP = DefaultStatus.Hp;
-
+            playerData.Pos = this.transform.position;
             playerData.Atk = CurrentStatus.Power;
 
             string jsonstr = JsonUtility.ToJson(playerData);
