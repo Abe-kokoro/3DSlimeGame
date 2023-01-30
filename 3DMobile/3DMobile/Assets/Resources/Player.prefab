@@ -2107,7 +2107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f647966b00bff74bb32e69863c8b810, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerMove: 3
+  PlayerMove: 4
   JoystickValue: {x: 0, y: 0}
   TPSCamera: {fileID: 0}
   PlayerMoveFlg: 0
