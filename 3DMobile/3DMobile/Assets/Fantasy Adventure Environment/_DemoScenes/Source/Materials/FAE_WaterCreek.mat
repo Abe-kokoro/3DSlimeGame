@@ -11,8 +11,8 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: e02af2867afa32a46ae65b908b67dbed,
     type: 3}
   m_ShaderKeywords: _WORLDSPACETILIBG_ON _WORLDSPACETILING_ON
-  m_LightmapFlags: 2
-  m_EnableInstancingVariants: 0
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
