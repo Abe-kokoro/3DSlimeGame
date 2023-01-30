@@ -51,7 +51,8 @@ public class TitleManager : MonoBehaviour
         NewGame.SetActive(false);
         LoadingPanel.SetActive(true);
         LoadDataflg = true;
-        SceneManager.LoadScene("MainGameScene");
+        //SceneManager.LoadScene("MainGameScene");
+        SceneManager.LoadScene("FAE_Demo1");
     }
     public void NewGameClicked()
     {
@@ -85,6 +86,7 @@ public class TitleManager : MonoBehaviour
     {
         LoadingPanel.SetActive(true);
         PlayerName = inputField.text;
-        SceneManager.LoadScene("MainGameScene");
+        //SceneManager.LoadScene("MainGameScene");
+        SceneManager.LoadScene("FAE_Demo1");
     }
 }
