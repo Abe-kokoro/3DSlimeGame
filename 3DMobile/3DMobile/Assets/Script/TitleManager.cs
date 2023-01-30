@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.IO;
 public class TitleManager : MonoBehaviour
 {
     //オブジェクトと結びつける
@@ -18,11 +19,21 @@ public class TitleManager : MonoBehaviour
     public GameObject NameError;
     public static string PlayerName;
     public static bool LoadDataflg = false;
+
     void Start()
     {
+        string SaveFilePath = Application.persistentDataPath + "/savedata.json";
+        if (File.Exists(SaveFilePath))
+        {
+            Login.SetActive(true);
+        }
+        else
+        {
+            Login.SetActive(false);
+        }
         //Componentを扱えるようにする
         inputField = inputField.GetComponent<TMP_InputField>();
-        Login.SetActive(true);
+        
         Login.GetComponent<Button>().onClick.AddListener(LoginClicked);
         NewGame.SetActive(true);
         NewGame.GetComponent<Button>().onClick.AddListener(NewGameClicked);

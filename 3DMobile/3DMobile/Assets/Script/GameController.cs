@@ -9,15 +9,7 @@ using System.IO;
 //PUNのコールバックを受け取れるようにする
 public class GameController : MonoBehaviourPunCallbacks
 {
-    [System.Serializable]
-    public class PlayerSaveData
-    {
-        public string PlayerName;
-        public int Lv;
-        public int CurrentHP;
-        public int DefaultHP;
-        public int Atk;
-    }
+    
     [SerializeField] GameObject menu;
     [SerializeField] public static bool isPC  = false;
     [SerializeField] bool isMenu;
@@ -36,7 +28,8 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            PlayerSaveData PlayerLoadData = loadPlayerData();
+            //PlayerSaveData PlayerLoadData = loadPlayerData();
+            PlyerAnimator.PlayerSaveData PlayerLoadData = loadPlayerData();
             PhotonNetwork.NickName = PlayerLoadData.PlayerName;
             Loaded = false;
         }
@@ -143,15 +136,18 @@ public class GameController : MonoBehaviourPunCallbacks
         PhotonNetwork.Instantiate("Player",position,Quaternion.identity);
 
     }
-    public PlayerSaveData loadPlayerData()
+    public PlyerAnimator.PlayerSaveData loadPlayerData()
     {
-        string datastr = "";
-        StreamReader reader;
-        reader = new StreamReader(Application.persistentDataPath + "/savedata.json");
-        datastr = reader.ReadToEnd();
-        reader.Close();
+        
+            string datastr = "";
+            StreamReader reader;
+            reader = new StreamReader(Application.persistentDataPath + "/savedata.json");
+            datastr = reader.ReadToEnd();
+            reader.Close();
 
-        return JsonUtility.FromJson<PlayerSaveData>(datastr);
+            return JsonUtility.FromJson<PlyerAnimator.PlayerSaveData>(datastr);
+        
+        
     }
 
 }
