@@ -28,7 +28,7 @@ namespace DissolveExample
         void Update()
         {
 
-            var value = Mathf.PingPong(Time.time * 0.5f, 1f);
+            var value = Mathf.PingPong(Time.time * 0.1f, 1f);
             SetValue(value);
         }
 

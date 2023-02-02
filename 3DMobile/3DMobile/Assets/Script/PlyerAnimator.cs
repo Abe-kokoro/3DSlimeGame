@@ -11,7 +11,8 @@ using TMPro;
 using Unity.VisualScripting;
 using Photon.Pun.Demo.Cockpit;
 using System.IO;
-public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
+using UnityEditor;
+public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
 {
     [System.Serializable]
     public class PlayerSaveData
@@ -51,18 +52,31 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         public int Power = 1;
         public int Element = 0;
     }
-    
+    [System.Serializable]
+    public class SlashEffect
+    {
+        public ParticleSystem Sword1particle;
+        public ParticleSystem Sword2particle;
+        public ParticleSystem Sword3particle;
+        public ParticleSystem Sword4particle;
+    }
+    [SerializeField] GameObject PlayerModel;
     //HPBar slider
     public Slider HPslider;
     public TextMeshProUGUI LvText;
     [SerializeField]
     [Tooltip("effect")]
     private ParticleSystem Attack1particle;
-    [SerializeField] private ParticleSystem Rengeki1particle;
-    [SerializeField] private ParticleSystem Rengeki2particle;
-    [SerializeField] private ParticleSystem Rengeki3particle;
-    [SerializeField] private ParticleSystem Rengeki4particle;
+    [SerializeField] SlashEffect NormalEffect = new SlashEffect();
+    [SerializeField] SlashEffect FireEffect = new SlashEffect();
+    [SerializeField] SlashEffect LeafEffect = new SlashEffect();
+    [SerializeField] SlashEffect WaterEffect = new SlashEffect();
+
+   
+
+
     [SerializeField] private ParticleSystem Finalparticle;
+    
     // 攻撃HitオブジェクトのColliderCall.
     [SerializeField] ColliderCallReceiver attackHitCall = null;
     // 基本ステータス.
@@ -77,7 +91,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     // アニメーター
     Animator animator = null;
     //ジャンプ力
-    [SerializeField] float jumpPower = 20f;
+    [SerializeField] float jumpPower = 60f;
     // リジッドボディ
     Rigidbody rigid = null;
     //! 攻撃アニメーション中フラグ.
@@ -131,6 +145,12 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
         }
         HPslider.value = 1;
         LvUpCount = 3 + CurrentStatus.Lv * 2;
+        if(photonView.IsMine)
+        {
+            //PlayerModel.AddComponent<AudioListener>();
+            //Camera.main.GetComponent<AudioListener>().enabled = false;
+        }
+        
     }
 
     // Update is called once per frame
@@ -419,7 +439,25 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     }
     void AttackS6_Start()
     {
-        ParticleSystem newParticle = Instantiate(Rengeki1particle);
+        ParticleSystem newParticle = null;
+        switch ((AttackElement)CurrentStatus.Element)
+        {
+            case AttackElement.ELEMENT_NORMAL:
+                newParticle = Instantiate(NormalEffect.Sword1particle);
+                break;
+            case AttackElement.ELEMENT_FIRE:
+                newParticle = Instantiate(FireEffect.Sword1particle);
+                break;
+            case AttackElement.ELEMENT_LEAF:
+                newParticle = Instantiate(LeafEffect.Sword1particle);
+                break;
+            case AttackElement.ELEMENT_WATER:
+                newParticle = Instantiate(WaterEffect.Sword1particle);
+                break;
+
+        }
+
+        
         newParticle.transform.position = this.transform.position + newParticle.transform.position;
         Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
         newParticle.transform.localEulerAngles = LocalAngles;
@@ -454,11 +492,27 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     }
     void AttackS2_Effect()
     {
-        ParticleSystem newParticle = Instantiate(Rengeki2particle);
+        ParticleSystem newParticle = null;
+        switch ((AttackElement)CurrentStatus.Element)
+        {
+            case AttackElement.ELEMENT_NORMAL:
+                newParticle = Instantiate(NormalEffect.Sword2particle);
+                break;
+            case AttackElement.ELEMENT_FIRE:
+                newParticle = Instantiate(FireEffect.Sword2particle);
+                break;
+            case AttackElement.ELEMENT_LEAF:
+                newParticle = Instantiate(LeafEffect.Sword2particle);
+                break;
+            case AttackElement.ELEMENT_WATER:
+                newParticle = Instantiate(WaterEffect.Sword2particle);
+                break;
+
+        }
+
         newParticle.transform.position = this.transform.position + newParticle.transform.position;
         Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
         newParticle.transform.localEulerAngles = LocalAngles;
-
         newParticle.Play();
         Destroy(newParticle.gameObject, 1.0f);
     }
@@ -484,7 +538,24 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     }
     void AttackS5_Effect()
     {
-        ParticleSystem newParticle = Instantiate(Rengeki3particle);
+        ParticleSystem newParticle = null;
+        switch ((AttackElement)CurrentStatus.Element)
+        {
+            case AttackElement.ELEMENT_NORMAL:
+                newParticle = Instantiate(NormalEffect.Sword3particle);
+                break;
+            case AttackElement.ELEMENT_FIRE:
+                newParticle = Instantiate(FireEffect.Sword3particle);
+                break;
+            case AttackElement.ELEMENT_LEAF:
+                newParticle = Instantiate(LeafEffect.Sword3particle);
+                break;
+            case AttackElement.ELEMENT_WATER:
+                newParticle = Instantiate(WaterEffect.Sword3particle);
+                break;
+
+        }
+
         newParticle.transform.position = this.transform.position + newParticle.transform.position;
         Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
         newParticle.transform.localEulerAngles = LocalAngles;
@@ -509,7 +580,24 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks,IPunObservable
     }
     void AttackWS2_Effect()
     {
-        ParticleSystem newParticle = Instantiate(Rengeki4particle);
+        ParticleSystem newParticle = null;
+        switch ((AttackElement)CurrentStatus.Element)
+        {
+            case AttackElement.ELEMENT_NORMAL:
+                newParticle = Instantiate(NormalEffect.Sword4particle);
+                break;
+            case AttackElement.ELEMENT_FIRE:
+                newParticle = Instantiate(FireEffect.Sword4particle);
+                break;
+            case AttackElement.ELEMENT_LEAF:
+                newParticle = Instantiate(LeafEffect.Sword4particle);
+                break;
+            case AttackElement.ELEMENT_WATER:
+                newParticle = Instantiate(WaterEffect.Sword4particle);
+                break;
+
+        }
+
         newParticle.transform.position = this.transform.position + newParticle.transform.position;
         Vector3 LocalAngles = newParticle.transform.localEulerAngles + this.transform.localEulerAngles;
         newParticle.transform.localEulerAngles = LocalAngles;

@@ -16,5 +16,7 @@ public class CameraManager : MonoBehaviour
     {
         //this.GetComponent<Camera>().farClipPlane = FarClipping;
         FarClipping = this.GetComponent<Camera>().farClipPlane;
+        
+        
     }
 }
