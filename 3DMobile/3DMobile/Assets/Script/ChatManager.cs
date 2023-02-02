@@ -57,7 +57,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
             }
             if(!isSclSelect)
             {
-                scl.value = 0.0f;
+                //scl.value = 0.0f;
             }
         }
         if(isUI)

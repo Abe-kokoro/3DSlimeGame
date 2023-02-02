@@ -2048,18 +2048,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerName: 
   PlayerLv: 1
+  PlayerModel: {fileID: 7649054988444028168}
   HPslider: {fileID: 1665405420}
   LvText: {fileID: 8754927286793614700}
   Attack1particle: {fileID: 198741542255655676, guid: d22a68798bdb83349b8256c295a8ee89,
     type: 3}
-  Rengeki1particle: {fileID: 198741542255655676, guid: c89755932eb258c45b2ccb06b4754a8a,
-    type: 3}
-  Rengeki2particle: {fileID: 198741542255655676, guid: 70002bfb56c18874f98af88c5f34b94e,
-    type: 3}
-  Rengeki3particle: {fileID: 198741542255655676, guid: ce072b133bf55bf40b40b0555433bdbb,
-    type: 3}
-  Rengeki4particle: {fileID: 198412930389571108, guid: 432509f47257c204f88ccccc7a049fa3,
-    type: 3}
+  NormalEffect:
+    Sword1particle: {fileID: 198741542255655676, guid: ed321499924d571488bbf0fdab5926dd,
+      type: 3}
+    Sword2particle: {fileID: 198741542255655676, guid: 068546391e1c8674f9f326253ee17023,
+      type: 3}
+    Sword3particle: {fileID: 198741542255655676, guid: 8144bd068cce7d04e9fd556bb2fa5183,
+      type: 3}
+    Sword4particle: {fileID: 198412930389571108, guid: d8d036f6f02a15045a924eeb2d541e6c,
+      type: 3}
+  FireEffect:
+    Sword1particle: {fileID: 198741542255655676, guid: 383b4cc2d2c1cac49a771e063f458bf4,
+      type: 3}
+    Sword2particle: {fileID: 198741542255655676, guid: 108770987bbb1cc41b1535b3d8609b1c,
+      type: 3}
+    Sword3particle: {fileID: 198741542255655676, guid: 7c1ca9ce0a834bf4ebc76b24906047e6,
+      type: 3}
+    Sword4particle: {fileID: 198412930389571108, guid: 0be8f3dcfea5ea1449a093deb3ed0c02,
+      type: 3}
+  LeafEffect:
+    Sword1particle: {fileID: 198741542255655676, guid: 8a5be557dd755724b9920d4e0c167314,
+      type: 3}
+    Sword2particle: {fileID: 198741542255655676, guid: 9e53c4c811c2afe4c806ba43ce7dd906,
+      type: 3}
+    Sword3particle: {fileID: 198741542255655676, guid: c2602164e28b9c24fb03a77ba8f0b4f6,
+      type: 3}
+    Sword4particle: {fileID: 198412930389571108, guid: 3228f6ba3a32cec46802566cc0358e86,
+      type: 3}
+  WaterEffect:
+    Sword1particle: {fileID: 198741542255655676, guid: 50a833faebd0ad74198e9750b2fd24a2,
+      type: 3}
+    Sword2particle: {fileID: 198741542255655676, guid: 2343598c7fac04341bd2e6f1b2f2be9c,
+      type: 3}
+    Sword3particle: {fileID: 198741542255655676, guid: 4301499536ee7ed49ad47d5a43dcc499,
+      type: 3}
+    Sword4particle: {fileID: 198412930389571108, guid: 0ca4ac763b49222429d4b237f5f4bd4f,
+      type: 3}
   Finalparticle: {fileID: 198190562059387860, guid: 02d1ded502f21e64d847ab0c8b315fb8,
     type: 3}
   attackHitCall: {fileID: 648673744}
@@ -2076,7 +2105,7 @@ MonoBehaviour:
     Power: 1
     Element: 0
   attackHit: {fileID: 648673739}
-  jumpPower: 40
+  jumpPower: 60
   isAttack: 0
   isAttack2: 0
   isAttacking: 0
@@ -2250,6 +2279,12 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!1 &7649054988444028168 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1339711049939396, guid: 16e7451e81164bc4caac73768f16ceb6,
+    type: 3}
+  m_PrefabInstance: {fileID: 7647715290282292428}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7650783925375738624 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4274868087642060, guid: 16e7451e81164bc4caac73768f16ceb6,

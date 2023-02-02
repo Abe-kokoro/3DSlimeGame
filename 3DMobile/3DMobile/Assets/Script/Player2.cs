@@ -107,19 +107,19 @@ public class Player2 : MonoBehaviourPunCallbacks
                         MouseFlg = false;
                         PlayerMoveFlg = true;
                         JoystickAngle = GetAngle(new Vector3(0, 0), JoystickValue);
-                        if (JoystickValue.y > 0)
+                        if (JoystickValue.y > 0.5f)
                         {
                             Up = true;
                         }
-                        if (JoystickValue.x > 0)
+                        if (JoystickValue.x > 0.5f)
                         {
                             Right = true;
                         }
-                        if (JoystickValue.y < 0)
+                        if (JoystickValue.y < -0.5f)
                         {
                             Down = true;
                         }
-                        if (JoystickValue.x < 0)
+                        if (JoystickValue.x < -0.5f)
                         {
                             Left = true;
                         }

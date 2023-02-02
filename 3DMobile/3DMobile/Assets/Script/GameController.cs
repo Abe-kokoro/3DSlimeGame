@@ -63,8 +63,7 @@ public class GameController : MonoBehaviourPunCallbacks
             {
                 if (!Menu.isMenu)
                 {
-                    Cursor.lockState = CursorLockMode.Confined;
-                    Cursor.visible = true;
+                    
                     menu.GetComponent<Menu>().Pause();
 
 
@@ -73,8 +72,8 @@ public class GameController : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    
-                    
+                    menu.GetComponent<Menu>().Resume();
+
                     //    Cursor.lockState = CursorLockMode.Locked;
                     //    Cursor.visible = false;
                     //
@@ -99,8 +98,8 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
+            //Cursor.lockState = CursorLockMode.Confined;
+            //Cursor.visible = true;
         }
         //if(!Loaded)
         //{
