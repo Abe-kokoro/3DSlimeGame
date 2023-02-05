@@ -7,6 +7,7 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 using TMPro;
 
+
 public class Menu : MonoBehaviour
 {
     //デバッグ
@@ -44,6 +45,8 @@ public class Menu : MonoBehaviour
     [SerializeField] private TMP_Dropdown Shadow;
     [SerializeField] private GameObject SaveTrue;
     [SerializeField] private GameObject SaveFalse;
+    [SerializeField] private Scrollbar SettingSlider;
+    [SerializeField]float mouseScroll = 1.0f;
 
 
     [SerializeField] bool PauseFlg = false;
@@ -115,6 +118,7 @@ public class Menu : MonoBehaviour
     }
     void Update()
     {
+        var cameraData = Camera.main.GetUniversalAdditionalCameraData();
         shadowQuality = QualitySettings.shadows;
         if(isGranpicChange)
         {
@@ -124,25 +128,21 @@ public class Menu : MonoBehaviour
         {
             SaveSettingsPanel.SetActive(false);
         }
-
-        if(Input.GetKeyDown(KeyCode.DownArrow))
+        if(GameController.isPC)
         {
-            RenderingScale-=10;
-            isGranpicChange = true;
-        }
-        if(Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            RenderingScale+=10;
-            isGranpicChange = true;
-        }
-        RenderingScale=Mathf.Clamp(RenderingScale, 10, 200);
-        
-        if (Input.GetKeyDown("m")&&isGranpicChange)
-        {
-            ChangeGraphics();
+            if(!Input.GetMouseButton(0))
+            {
+                mouseScroll += Input.GetAxis("Mouse ScrollWheel");
+                mouseScroll = Mathf.Clamp(mouseScroll, 0.0f, 1.0f);
+                SettingSlider.value = mouseScroll;
+                
+            }
+            else
+            { 
+                mouseScroll = SettingSlider.value;
+            }
         }
         
-
     }
     void Menue()
     {
@@ -215,11 +215,14 @@ public class Menu : MonoBehaviour
 
     private void SettingsMenu()
     {
+        SettingSlider.value = 1.0f;
         SettingPanel.SetActive(true);
         pausePanel.SetActive(false);
     }
     private void SettingsExit()
     {
+        SettingSlider.value = 1.0f;
+        mouseScroll = 1.0f;
         SettingPanel.SetActive(false);
         pausePanel.SetActive(true);
     }
