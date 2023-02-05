@@ -11,8 +11,8 @@ using Photon.Pun.Demo.PunBasics;
 
 public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
 {
-    
 
+    [SerializeField] float DespawneTime = 0.0f;
     [SerializeField, Range(1, 1000)]
     int EnemyLv;
     //! 攻撃判定用コライダーコール.
@@ -79,8 +79,8 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] Transform EnemyCanvas;
     void Start()
     {
-        DefaultStatus.Lv = EnemyLv;
-        CurrentStatus.Lv = EnemyLv;
+       // DefaultStatus.Lv = EnemyLv;
+        //CurrentStatus.Lv = EnemyLv;
         animator = GetComponent<Animator>();
         // 周辺コライダーイベント登録.
         aroundColliderCall.TriggerEnterEvent.AddListener(OnAroundTriggerEnter);
@@ -96,7 +96,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         // 攻撃コライダーイベント登録.
         attackHitColliderCall.TriggerEnterEvent.AddListener(OnAttackTriggerEnter);
         DefaultStatus.Hp = 90 + EnemyLv * 12;
-        DefaultStatus.Power = 20+EnemyLv * 7;
+        DefaultStatus.Power = 20 + EnemyLv * 7;
         // 最初に現在のステータスを基本ステータスとして設定.
         CurrentStatus.Hp = DefaultStatus.Hp;
         CurrentStatus.Power = DefaultStatus.Power;
@@ -109,12 +109,14 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     }
     void Update()
     {
+        DespawneTime += Time.deltaTime;
         EnemyLv = CurrentStatus.Lv;
         EnemyLvText.text = "LV." + EnemyLv;
         EnemyHPBar.value = (float)CurrentStatus.Hp / (float)DefaultStatus.Hp;
         // 攻撃できる状態の時.
         if (isBattle == true)
         {
+            DespawneTime = 0;
             animator.SetBool("isMove", false);
             animator.SetBool("isWalk", false);
             attackTimer += Time.deltaTime;
@@ -127,9 +129,10 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            attackTimer = 0;
+            
             if (isTrase == true)
             {
+                attackTimer = 0;
                 animator.SetBool("isMove", true);
                 animator.SetBool("isWalk", false);
                 if (isMove)
@@ -156,6 +159,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
                     if(timer>2.5f)
                     {
                         NextRotateCoolTime = UnityEngine.Random.Range(8, 16);
+                        timer = 0; 
                         RotateTimer = 0;
                         isRotate = false;
                     }
@@ -173,22 +177,25 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
         }
-       
+        if (DespawneTime > 30)
+        {
+            RPCDestroy(this.gameObject);
+        }
         if(!CurrentStatus.isAlive)
         {
+            RPCDestroy(this.gameObject);
+        //    DefaultStatus.Lv = CurrentStatus.Lv + UnityEngine.Random.Range(0,2);
+        //    CurrentStatus.Lv = DefaultStatus.Lv;
             
-            DefaultStatus.Lv = CurrentStatus.Lv + UnityEngine.Random.Range(0,2);
-            CurrentStatus.Lv = DefaultStatus.Lv;
-            
-            CurrentStatus.isAlive = true;
-            DefaultStatus.Hp = 90 + CurrentStatus.Lv * 12;
-            DefaultStatus.Power = 10 + CurrentStatus.Lv * 3;
-            // 最初に現在のステータスを基本ステータスとして設定.
-            CurrentStatus.Hp = DefaultStatus.Hp;
-            CurrentStatus.Power = DefaultStatus.Power;
+        //    CurrentStatus.isAlive = true;
+        //    DefaultStatus.Hp = 90 + CurrentStatus.Lv * 12;
+        //    DefaultStatus.Power = 10 + CurrentStatus.Lv * 3;
+        //    // 最初に現在のステータスを基本ステータスとして設定.
+        //    CurrentStatus.Hp = DefaultStatus.Hp;
+        //    CurrentStatus.Power = DefaultStatus.Power;
             
 
-            transform.localPosition = new Vector3(UnityEngine.Random.Range(50,100)*SpawnRange, transform.localPosition.y+5, UnityEngine.Random.Range(50, 100) * SpawnRange);
+        //    transform.localPosition = new Vector3(UnityEngine.Random.Range(50,100)*SpawnRange, transform.localPosition.y+5, UnityEngine.Random.Range(50, 100) * SpawnRange);
         }
     }
     void SetisRotate()
@@ -523,5 +530,20 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             DefaultStatus.Power = (int)stream.ReceiveNext();
             //TrasePlayer = (GameObject)stream.ReceiveNext();
         }
+    }
+    public void SetEnemyLv(int lv)
+    {
+        DefaultStatus.Lv = lv;
+        DefaultStatus.Hp = 90 + lv * 12;
+        DefaultStatus.Power = 20 + lv * 7;
+        CurrentStatus.Hp = DefaultStatus.Hp;
+        CurrentStatus.Power = DefaultStatus.Power;
+        CurrentStatus.Lv = DefaultStatus.Lv;
+        EnemyLv = lv;
+    }
+    [PunRPC]
+    private void RPCDestroy(GameObject DeadEnemy)
+    {
+        PhotonNetwork.Destroy(DeadEnemy);
     }
 }

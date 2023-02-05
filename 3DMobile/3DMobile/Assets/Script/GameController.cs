@@ -98,8 +98,8 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            //Cursor.lockState = CursorLockMode.Confined;
-            //Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
         //if(!Loaded)
         //{
