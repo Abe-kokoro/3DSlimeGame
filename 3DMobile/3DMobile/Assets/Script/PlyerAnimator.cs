@@ -272,6 +272,14 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
             {
                 isDead = false;
                 animator.SetBool("isDead", false);
+                isAttack2 = false;
+                isAttack = false;
+                isAttackChain = false;
+                isAttacking = false;
+                isFight = false;
+                isWeaponSwitching = false;
+                isRelax = true;
+                RelaxCount = 0.0f;
                 CurrentStatus.Hp = (int)((float)DefaultStatus.Hp * 0.8f);
                 if (CurrentStatus.Lv > 4)
                 {
