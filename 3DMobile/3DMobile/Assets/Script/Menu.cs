@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 using TMPro;
-
+using Cinemachine;
 
 public class Menu : MonoBehaviour
 {
@@ -47,6 +47,8 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject SaveFalse;
     [SerializeField] private Scrollbar SettingSlider;
     [SerializeField]float mouseScroll = 1.0f;
+    [SerializeField] GameObject CM_TPS;
+    [SerializeField] private Slider RenderRange;
 
 
     [SerializeField] bool PauseFlg = false;
@@ -142,6 +144,7 @@ public class Menu : MonoBehaviour
                 mouseScroll = SettingSlider.value;
             }
         }
+        Camera.main.GetComponent<Camera>().allowMSAA = true;
         
     }
     void Menue()
@@ -291,6 +294,7 @@ public class Menu : MonoBehaviour
         {
             URPAsset.shadowDistance = 0;
         }
+        CM_TPS.GetComponent<CinemachineVirtualCamera>().m_Lens.FarClipPlane = RenderRange.value;
         GraphicsSettings.renderPipelineAsset = URPAsset;
         Debug.Log("グラフィック設定を更新しました");
         
@@ -316,5 +320,6 @@ public class Menu : MonoBehaviour
             Antialiasing.value = 3;
         }
         Shadow.value = (int)QualitySettings.shadows;
+        RenderRange.value = CM_TPS.GetComponent<CinemachineVirtualCamera>().m_Lens.FarClipPlane;
     }
 }
