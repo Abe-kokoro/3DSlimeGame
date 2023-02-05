@@ -1180,6 +1180,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1715529810}
     m_Modifications:
+    - target: {fileID: 3619274202692284364, guid: 6d33bf7dd685ec740b0582f6c7c3792b,
+        type: 3}
+      propertyPath: m_text
+      value: 1513
+      objectReference: {fileID: 0}
     - target: {fileID: 3619274202692284366, guid: 6d33bf7dd685ec740b0582f6c7c3792b,
         type: 3}
       propertyPath: m_Name
@@ -1501,11 +1506,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b2aa875452f48d45b521afe2e29e904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DespawneTime: 0
   EnemyLv: 1
   attackHitColliderCall: {fileID: 2112935977}
   SpawnRange: 1
   EnemyHPBar: {fileID: 396266230}
   TrasePlayer: {fileID: 0}
+  PlayerList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   DefaultStatus:
     Lv: 1
     Hp: 100

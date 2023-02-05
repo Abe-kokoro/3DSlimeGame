@@ -25,6 +25,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] GameObject TrasePlayer = null;
     // アニメーター.
     Animator animator = null;
+    [SerializeField] GameObject[] PlayerList = new GameObject[20];
     public enum EnemyElement
     {
         ELEMENT_NORMAL,
@@ -226,15 +227,38 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         attackTimer = 0f;
 
-        
+        for(int i= 0;i<20;i++)
+        {
+            if(PlayerList[i]==null)
+            {
+                PlayerList[i] = PlayerStatus;
+                break;
+            }
+            else
+            {
+                if(PlayerList[i]==PlayerStatus)
+                {
+                    break;
+                }
+            }
+        }
         
         
         Debug.Log("Hit Damage " + damage + "/CurrentHp = " + CurrentStatus.Hp);
         int DmgElement = PlayerStatus.GetComponent<PlyerAnimator>().CurrentStatus.Element;
         if (DmgElement == 0)//Normal
         {
-            DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(1,1,1,1);
-            
+            if(CurrentStatus.Element == 0)
+            {
+                damage = 0;
+                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
+            }
+            else
+            {
+                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(1, 1, 1, 1);
+
+            }
+
         }
         else if(DmgElement == 1)//Fire
         {
@@ -303,10 +327,19 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         //Invoke("ClearDmg(DmgText)", 1);
         if (CurrentStatus.Hp <= 0)
         {
-            if(isMine)
+            for(int i = 0;i<20;i++)
             {
-                PlayerStatus.gameObject.GetComponent<PlyerAnimator>().AddKillcount();
+                if(PlayerList[i] == null)
+                {
+                    break;
+                }
+                else
+                {
+                    PlayerList[i].gameObject.GetComponent<PlyerAnimator>().AddKillcount(CurrentStatus.Lv);
+                }
             }
+                PlayerStatus.gameObject.GetComponent<PlyerAnimator>().AddKillcount(1);
+            
             OnDie();
         }
         else if(dmgLevel == 1)

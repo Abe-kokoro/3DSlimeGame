@@ -26,7 +26,7 @@ public class EnemySpawner : MonoBehaviourPunCallbacks
         if(EnemySpawnedCount >=MaxSpawn)
         {
             ReActiveTime += Time.deltaTime;
-            if(ReActiveTime >= 120)
+            if(ReActiveTime >= 30)
             {
                 ReActiveTime = 0;
                 EnemySpawnedCount = 0;
@@ -44,8 +44,12 @@ public class EnemySpawner : MonoBehaviourPunCallbacks
     {
         if (other.gameObject.tag == "Player")
         {
-            if(EnemySpawnedCount <MaxSpawn)
-            SpawnEnemy();
+            if (photonView.IsMine)
+            {
+
+                if (EnemySpawnedCount < MaxSpawn)
+                    SpawnEnemy();
+            }
         }
     }
     void SpawnEnemy()

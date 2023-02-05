@@ -23,6 +23,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         public int DefaultHP;
         public int Atk;
         public Vector3 Pos;
+        public int LvUpCount;
+        public int EXP;
     }
 
 
@@ -144,8 +146,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
 
         }
         HPslider.value = 1;
-        LvUpCount = 3 + CurrentStatus.Lv * 2;
-        if(photonView.IsMine)
+        LvUpCount = CurrentStatus.Lv * 7 + 3;
+        if (photonView.IsMine)
         {
             //PlayerModel.AddComponent<AudioListener>();
             //Camera.main.GetComponent<AudioListener>().enabled = false;
@@ -159,7 +161,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         DefaultStatus.Hp = 975+CurrentStatus.Lv * 25;
         CurrentStatus.Power = 10+CurrentStatus.Lv * 3;
         
-        LvUpCount = 3 + CurrentStatus.Lv * 2;
+        //LvUpCount = 3 + CurrentStatus.Lv * 2;
         if (photonView.IsMine&&!GameController.Loaded)
         {
             
@@ -172,6 +174,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
                  CurrentStatus.Power = PlayerLoadData.Atk;
                  this.transform.position = PlayerLoadData.Pos;
                  GameController.Loaded = true;
+                LvUpCount = PlayerLoadData.LvUpCount;
+                EnemyKillCount = PlayerLoadData.EXP;
              }
         }
         
@@ -223,7 +227,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         if(EnemyKillCount>=LvUpCount)
         {
             EnemyKillCount = 0;
-            LvUpCount = CurrentStatus.Lv * 3;
+            LvUpCount = CurrentStatus.Lv * 7+3;
             PlayerLvUp(1);
         }
         if (photonView.IsMine)
@@ -858,9 +862,9 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
             DefaultStatus.Lv = (int)stream.ReceiveNext();
         }
     }
-    public void AddKillcount()
+    public void AddKillcount(int enemylv)
     {
-        EnemyKillCount++;
+        EnemyKillCount+=enemylv;
     }
     public int GetKillCount()
     {
@@ -895,7 +899,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
             playerData.DefaultHP = DefaultStatus.Hp;
             playerData.Pos = this.transform.position;
             playerData.Atk = CurrentStatus.Power;
-
+            playerData.EXP = EnemyKillCount;
             string jsonstr = JsonUtility.ToJson(playerData);
 
             StreamWriter writer;
