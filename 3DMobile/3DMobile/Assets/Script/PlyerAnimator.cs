@@ -63,6 +63,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         public ParticleSystem Sword4particle;
     }
     [SerializeField] GameObject PlayerModel;
+    [SerializeField] float UpFloat=0.1f;
     //HPBar slider
     public Slider HPslider;
     public TextMeshProUGUI LvText;
@@ -111,8 +112,10 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
     public bool isRespwan = false;
     // 設置判定用ColliderCall.
     [SerializeField] ColliderCallReceiver footColliderCall = null;
+    [SerializeField] ColliderCallReceiver ChestColliderCall = null;
     // 接地フラグ.
     public bool isGround = false;
+    public bool isWater = false;
     [SerializeField] float RelaxCount = 0f;
     [SerializeField] float RelaxTime = 5f;
     public bool isRelax = false;
@@ -130,6 +133,9 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         
         footColliderCall.TriggerStayEvent.AddListener(OnFootTriggerStay);
         footColliderCall.TriggerExitEvent.AddListener(OnFootTriggerExit);
+        ChestColliderCall.TriggerStayEvent.AddListener(OnChestTriggerStay);
+        ChestColliderCall.TriggerExitEvent.AddListener(OnChestTriggerExit);
+
         // 攻撃判定用コライダーイベント登録.
         attackHitCall.TriggerEnterEvent.AddListener(OnAttackHitTriggerEnter);
         DefaultStatus.Lv = 1;
@@ -154,7 +160,10 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         }
         
     }
-
+    void FixedUpdate()
+    {
+        
+    }
     // Update is called once per frame
     void Update()
     {
@@ -658,6 +667,37 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         {
             isGround = false;
             animator.SetBool("isGround", false);
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    /// <summary>
+    /// FootSphereトリガーステイコール.
+    /// </summary>
+    /// <param name="col"> 侵入したコライダー. </param>
+    // ---------------------------------------------------------------------
+    void OnChestTriggerStay(Collider col)
+    {
+        if (col.gameObject.tag == "Water")
+        {
+            if (isWater == false) isWater = true;
+            //if (animator.GetBool("isGround") == false) animator.SetBool("isGround", true);
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    /// <summary>
+    /// FootSphereトリガーイグジットコール.
+    /// </summary>
+    /// <param name="col"> 侵入したコライダー. </param>
+    // ---------------------------------------------------------------------
+    void OnChestTriggerExit(Collider col)
+    {
+
+        if (col.gameObject.tag == "Water")
+        {
+            isWater = false;
+            //animator.SetBool("isGround", false);
         }
     }
     public bool GetAttackAnim()

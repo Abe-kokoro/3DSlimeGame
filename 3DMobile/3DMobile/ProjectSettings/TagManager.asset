@@ -9,6 +9,7 @@ TagManager:
   - Bullet
   - Camera
   - Water
+  - UI
   layers:
   - Default
   - TransparentFX

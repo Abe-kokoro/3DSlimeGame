@@ -133,6 +133,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             
             if (isTrase == true)
             {
+                DespawneTime = 0;
                 attackTimer = 0;
                 animator.SetBool("isMove", true);
                 animator.SetBool("isWalk", false);
@@ -178,7 +179,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
         }
-        if (DespawneTime > 30)
+        if (DespawneTime > 60)
         {
             RPCDestroy(this.gameObject);
         }
@@ -226,133 +227,135 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     public void OnAttackHit(int damage, int dmgLevel, bool isMine, GameObject PlayerStatus)
     {
         attackTimer = 0f;
-
-        for(int i= 0;i<20;i++)
+        if (CurrentStatus.Hp > 0)
         {
-            if(PlayerList[i]==null)
+            for (int i = 0; i < 20; i++)
             {
-                PlayerList[i] = PlayerStatus;
-                break;
-            }
-            else
-            {
-                if(PlayerList[i]==PlayerStatus)
+                if (PlayerList[i] == null)
                 {
-                    break;
-                }
-            }
-        }
-        
-        
-        Debug.Log("Hit Damage " + damage + "/CurrentHp = " + CurrentStatus.Hp);
-        int DmgElement = PlayerStatus.GetComponent<PlyerAnimator>().CurrentStatus.Element;
-        if (DmgElement == 0)//Normal
-        {
-            if(CurrentStatus.Element == 0)
-            {
-                damage = 0;
-                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
-            }
-            else
-            {
-                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(1, 1, 1, 1);
-
-            }
-
-        }
-        else if(DmgElement == 1)//Fire
-        {
-            DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(1, 0, 0, 1);
-            if(CurrentStatus.Element == DmgElement)
-            {
-                damage = 0;
-                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
-            }
-            if(CurrentStatus.Element == 2)
-            {
-                damage *=2;
-            }
-            if(CurrentStatus.Element == 3)
-            {
-                damage = damage / 2;
-            }
-        }
-        else if (DmgElement == 2)//Leaf
-        {
-            DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0, 1, 0, 1);
-            if(CurrentStatus.Element == DmgElement)
-            {
-                damage = 0;
-                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
-            }
-            if(CurrentStatus.Element ==1)
-            {
-                damage  = damage/ 2;
-            }
-            if(CurrentStatus.Element == 3)
-            {
-                damage *= 2;
-            }
-        }
-        else if (DmgElement == 3)//Water
-        {
-            DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0, 0, 1, 1);
-            if (CurrentStatus.Element == DmgElement)
-            {
-                damage = 0;
-                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
-            }
-            if (CurrentStatus.Element == 1)
-            {
-                damage *= 2;
-            }
-            if (CurrentStatus.Element == 2)
-            {
-                damage = damage/2;
-            }
-        }
-
-        CurrentStatus.Hp -= damage;
-        if(damage>0)
-        {
-            DmgText.GetComponent<TextMeshProUGUI>().text = "" + damage;
-        }
-        if(damage == 0)
-        {
-            DmgText.GetComponent<TextMeshProUGUI>().text = "–³Œø";
-        }
-
-        DmgText.transform.localPosition = new Vector3(UnityEngine.Random.Range(-100,100),10,0);
-        Instantiate(DmgText, EnemyCanvas);
-        //Invoke("ClearDmg(DmgText)", 1);
-        if (CurrentStatus.Hp <= 0)
-        {
-            for(int i = 0;i<20;i++)
-            {
-                if(PlayerList[i] == null)
-                {
+                    PlayerList[i] = PlayerStatus;
                     break;
                 }
                 else
                 {
-                    PlayerList[i].gameObject.GetComponent<PlyerAnimator>().AddKillcount(CurrentStatus.Lv);
+                    if (PlayerList[i] == PlayerStatus)
+                    {
+                        break;
+                    }
                 }
             }
+
+
+            Debug.Log("Hit Damage " + damage + "/CurrentHp = " + CurrentStatus.Hp);
+            int DmgElement = PlayerStatus.GetComponent<PlyerAnimator>().CurrentStatus.Element;
+            if (DmgElement == 0)//Normal
+            {
+                if (CurrentStatus.Element == 0)
+                {
+                    damage = 0;
+                    DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
+                }
+                else
+                {
+                    DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(1, 1, 1, 1);
+
+                }
+
+            }
+            else if (DmgElement == 1)//Fire
+            {
+                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(1, 0, 0, 1);
+                if (CurrentStatus.Element == DmgElement)
+                {
+                    damage = 0;
+                    DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
+                }
+                if (CurrentStatus.Element == 2)
+                {
+                    damage *= 2;
+                }
+                if (CurrentStatus.Element == 3)
+                {
+                    damage = damage / 2;
+                }
+            }
+            else if (DmgElement == 2)//Leaf
+            {
+                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0, 1, 0, 1);
+                if (CurrentStatus.Element == DmgElement)
+                {
+                    damage = 0;
+                    DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
+                }
+                if (CurrentStatus.Element == 1)
+                {
+                    damage = damage / 2;
+                }
+                if (CurrentStatus.Element == 3)
+                {
+                    damage *= 2;
+                }
+            }
+            else if (DmgElement == 3)//Water
+            {
+                DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0, 0, 1, 1);
+                if (CurrentStatus.Element == DmgElement)
+                {
+                    damage = 0;
+                    DmgText.GetComponent<TextMeshProUGUI>().color = new Vector4(0.5f, 0.5f, 0.5f, 1);
+                }
+                if (CurrentStatus.Element == 1)
+                {
+                    damage *= 2;
+                }
+                if (CurrentStatus.Element == 2)
+                {
+                    damage = damage / 2;
+                }
+            }
+
+            CurrentStatus.Hp -= damage;
+            if (damage > 0)
+            {
+                DmgText.GetComponent<TextMeshProUGUI>().text = "" + damage;
+            }
+            if (damage == 0)
+            {
+                DmgText.GetComponent<TextMeshProUGUI>().text = "–³Œø";
+            }
+
+            DmgText.transform.localPosition = new Vector3(UnityEngine.Random.Range(-100, 100), 10, 0);
+            Instantiate(DmgText, EnemyCanvas);
+            //Invoke("ClearDmg(DmgText)", 1);
+            if (CurrentStatus.Hp <= 0)
+            {
+                for (int i = 0; i < 20; i++)
+                {
+                    if (PlayerList[i] == null)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        PlayerList[i].gameObject.GetComponent<PlyerAnimator>().AddKillcount(CurrentStatus.Lv);
+                    }
+                }
                 PlayerStatus.gameObject.GetComponent<PlyerAnimator>().AddKillcount(1);
-            
-            OnDie();
-        }
-        else if(dmgLevel == 1)
-        {
-            animator.SetTrigger("isHit00");
-        }
-        else if(dmgLevel == 2)
-        {
-            animator.SetTrigger("isHit01");
-        }
-        else if (dmgLevel == 3)
-        {
-            animator.SetTrigger("isHit02");
+
+                OnDie();
+            }
+            else if (dmgLevel == 1)
+            {
+                animator.SetTrigger("isHit00");
+            }
+            else if (dmgLevel == 2)
+            {
+                animator.SetTrigger("isHit01");
+            }
+            else if (dmgLevel == 3)
+            {
+                animator.SetTrigger("isHit02");
+            }
         }
     }
     
@@ -574,7 +577,6 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         CurrentStatus.Lv = DefaultStatus.Lv;
         EnemyLv = lv;
     }
-    [PunRPC]
     private void RPCDestroy(GameObject DeadEnemy)
     {
         PhotonNetwork.Destroy(DeadEnemy);
