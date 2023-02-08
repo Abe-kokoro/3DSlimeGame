@@ -1324,6 +1324,116 @@ Transform:
   m_Father: {fileID: 7652604357844648906}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 264.089, y: -258.833, z: 287.941}
+--- !u!1 &5975708662285192951
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3379158326709852860}
+  - component: {fileID: 743692085531548617}
+  - component: {fileID: 8320112460779258651}
+  - component: {fileID: 2289501693463469898}
+  - component: {fileID: 3163857811983306199}
+  m_Layer: 0
+  m_Name: ChestCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3379158326709852860
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5975708662285192951}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.006, y: 0.474, z: -0.02605331}
+  m_LocalScale: {x: 0.016367188, y: 0.18777679, z: 0.18777679}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7650783925375738624}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &743692085531548617
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5975708662285192951}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &8320112460779258651
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5975708662285192951}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!135 &2289501693463469898
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5975708662285192951}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3163857811983306199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5975708662285192951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 520bcccdb91160f4d88ce9c287c52764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7454825643194420935
 GameObject:
   m_ObjectHideFlags: 0
@@ -2049,6 +2159,7 @@ MonoBehaviour:
   PlayerName: 
   PlayerLv: 1
   PlayerModel: {fileID: 7649054988444028168}
+  UpFloat: 0.1
   HPslider: {fileID: 1665405420}
   LvText: {fileID: 8754927286793614700}
   Attack1particle: {fileID: 198741542255655676, guid: d22a68798bdb83349b8256c295a8ee89,
@@ -2118,7 +2229,9 @@ MonoBehaviour:
   isDead: 0
   isRespwan: 0
   footColliderCall: {fileID: 2133262465}
+  ChestColliderCall: {fileID: 3163857811983306199}
   isGround: 0
+  isWater: 0
   RelaxCount: 0
   RelaxTime: 10
   isRelax: 0
@@ -2244,6 +2357,9 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 2
     Name: No
+  - Type: 9
+    SynchronizeType: 0
+    Name: buff
   m_SynchronizeLayers:
   - SynchronizeType: 2
     LayerIndex: 0

@@ -18,6 +18,7 @@ public class TPSCameraPos : MonoBehaviour
     [SerializeField] private Slider ScreenSensiY;
     [SerializeField] private GameObject SensiXText;
     [SerializeField] private GameObject SensiYText;
+    private bool[] b_touchObj = new bool[10];
 
     public static Vector2 MouseMove = Vector2.zero;
     private Vector3 pos = Vector3.zero;
@@ -52,6 +53,11 @@ public class TPSCameraPos : MonoBehaviour
         MouseMove.y = 0.6f;
         MouseMove.x = 0;
         nowPos = transform.position;
+        for (int i=0;i<10; i++)
+        {
+
+            b_touchObj[i] = false;
+        }
     }
 
     // Update is called once per frame
@@ -91,39 +97,109 @@ public class TPSCameraPos : MonoBehaviour
 
                         // タッチ数分、タッチ情報を確認する
                         touchInfo = Input.GetTouch(i);
-                        if (touchInfo.position.x > Screen.width / 2)
+                        
+
+                        //if (touchInfo.position.x > Screen.width / 2)
+                        if (touchInfo.position.x > 0)
                         {
-                            if (touchInfo.phase == TouchPhase.Began)
+                                if (touchInfo.phase == TouchPhase.Began)
                             {
-                                TapOldPos = touchInfo.position;
+                                Debug.Log("TouchBigan");
+
+                                //RaycastAllの引数（PointerEventData）作成
+                                PointerEventData pointData = new PointerEventData(EventSystem.current);
+
+                                //RaycastAllの結果格納用List
+                                List<RaycastResult> RayResult = new List<RaycastResult>();
+
+                                //PointerEventDataにマウスの位置をセット
+                                pointData.position = touchInfo.position;
+                                //RayCast（スクリーン座標）
+                                EventSystem.current.RaycastAll(pointData, RayResult);
+                                b_touchObj[i] = false;
+                                foreach (RaycastResult result in RayResult)
+                                {
+                                    if(result.gameObject.tag=="UI")
+                                    {
+                                        Debug.Log("TouchhitObj");
+                                        b_touchObj[i] = true;
+                                    }
+                                    
+                                }
+
+                                if(!b_touchObj[i])
+                                {
+                                    TapOldPos = touchInfo.position;
+                                    Debug.Log("NoHitobj");
+                                }
+
+                                //Vector2 world_point = Camera.main.ScreenToWorldPoint(touchInfo.position);
+
+                                //foreach (RaycastHit2D hit in Physics2D.RaycastAll(world_point, Vector2.zero))
+                                //{
+
+                                //    //オブジェクトが見つかったときの処理
+                                //    if (hit)
+                                //    {
+
+                                //        //タグがアイテムなら
+                                //        if (hit.collider.gameObject.CompareTag("UI"))
+                                //        {
+
+                                //            Debug.Log("TouchhitObj");
+                                //            b_touchObj[i] = true;
+                                //        }
+                                //        else
+                                //        {
+
+                                //            Debug.Log("NoTouchhitObj");
+                                //            b_touchObj[i] = false;
+                                            
+
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+
+                                //        Debug.Log("NoTouchhitObj");
+                                //        b_touchObj[i] = false;
+                                        
+
+                                //    }
+                                //}
+                                // RaycastHit2D hit = Physics2D.Raycast(world_point, Vector2.zero);
+                                
                             }
                             if (touchInfo.phase != TouchPhase.Ended && touchInfo.phase != TouchPhase.Canceled)
                             {
-                                CameraMoveFlg = true;
-                                TapPos = touchInfo.position;
-                                TapIndex = i;
+                                if (!b_touchObj[i])
+                                {
+                                    CameraMoveFlg = true;
+                                    TapPos = touchInfo.position;
+                                    TapIndex = i;
 
 
-                                transform.LookAt(PlayerTransform);
-                                //MouseAxis.x = Input.GetAxis("Mouse X")-MouseAxisOld.x;
-                                //MouseAxis.y = Input.GetAxis("Mouse Y") - MouseAxisOld.x;
+                                    transform.LookAt(PlayerTransform);
+                                    //MouseAxis.x = Input.GetAxis("Mouse X")-MouseAxisOld.x;
+                                    //MouseAxis.y = Input.GetAxis("Mouse Y") - MouseAxisOld.x;
 
-                                MouseAxis.x = TapPos.x - TapOldPos.x;
-                                MouseAxis.y = TapPos.y - TapOldPos.y;
-
-
+                                    MouseAxis.x = TapPos.x - TapOldPos.x;
+                                    MouseAxis.y = TapPos.y - TapOldPos.y;
 
 
-                                // MouseMove -= new Vector2(-Input.GetAxis("Mouse X") * TPSMouseSensi.x, Input.GetAxis("Mouse Y")) * Time.deltaTime * TPSMouseSensi.y;
-                                MouseMove -= new Vector2(-MouseAxis.x * TPSScreenSensi.x * Time.deltaTime * 2, MouseAxis.y * Time.deltaTime * TPSScreenSensi.y);
 
-                                WheelAxis = -Input.GetAxis("Mouse ScrollWheel");
-                                TPSCameraDistance += WheelAxis;
-                                TapOldPos = touchInfo.position;
 
+                                    // MouseMove -= new Vector2(-Input.GetAxis("Mouse X") * TPSMouseSensi.x, Input.GetAxis("Mouse Y")) * Time.deltaTime * TPSMouseSensi.y;
+                                    MouseMove -= new Vector2(-MouseAxis.x * TPSScreenSensi.x * Time.deltaTime * 2, MouseAxis.y * Time.deltaTime * TPSScreenSensi.y);
+
+                                    WheelAxis = -Input.GetAxis("Mouse ScrollWheel");
+                                    TPSCameraDistance += WheelAxis;
+                                    TapOldPos = touchInfo.position;
+                                }
                             }
                             else
                             {
+                                b_touchObj[i] = false;
                                 CameraMoveFlg = false;
                             }
                         }

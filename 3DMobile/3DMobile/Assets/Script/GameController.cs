@@ -11,7 +11,7 @@ public class GameController : MonoBehaviourPunCallbacks
 {
     
     [SerializeField] GameObject menu;
-    [SerializeField] public static bool isPC  = true;
+    [SerializeField] public static bool isPC  = false;
     [SerializeField] bool isMenu;
     [SerializeField] GameObject AndroidPanel;
     [SerializeField] GameObject ChatPanel;
