@@ -338,6 +338,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
                     else
                     {
                         PlayerList[i].gameObject.GetComponent<PlyerAnimator>().AddKillcount(CurrentStatus.Lv);
+                        PlayerList[i].gameObject.GetComponent<PlyerAnimator>().AddElement(CurrentStatus.Element);
                     }
                 }
                 PlayerStatus.gameObject.GetComponent<PlyerAnimator>().AddKillcount(1);

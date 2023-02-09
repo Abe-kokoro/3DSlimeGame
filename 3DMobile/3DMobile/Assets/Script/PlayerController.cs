@@ -11,7 +11,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [SerializeField] GameObject DashButton;
     [SerializeField] GameObject JumpButton;
     [SerializeField] GameObject AttackButton;
+    [SerializeField] GameObject ChangeElementButton;
     [SerializeField] Slider PlayerHPSlider;
+
+    [SerializeField] Slider PlayerFireSlider;
+    [SerializeField] Slider PlayerWaterSlider;
+    [SerializeField] Slider PlayerWindSlider;
+    [SerializeField] GameObject BackFireSlider;
+    [SerializeField] GameObject BackWaterSlider;
+    [SerializeField] GameObject BackWindSlider;
+
     [SerializeField] TextMeshProUGUI PlayerLevel;
     [SerializeField] GameObject Loading;
     [SerializeField] TextMeshProUGUI KillCount;
@@ -28,6 +37,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         //DashButton.GetComponent<Button>().onClick.AddListener(Dash);
         JumpButton.GetComponent<Button>().onClick.AddListener(Jump);
         AttackButton.GetComponent<Button>().onClick.AddListener(Attack);
+        ChangeElementButton.GetComponent<Button>().onClick.AddListener(ChangeElement);
         Loading.SetActive(true);
         resPos = new Vector3(RespawnPos.transform.position.x, RespawnPos.transform.position.y+5.0f, RespawnPos.transform.position.z);
     }
@@ -55,6 +65,34 @@ public class PlayerController : MonoBehaviourPunCallbacks
             PlayerCurrentHp = MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.Hp;
             PlayerMaxHp = MinePlayer.GetComponent<PlyerAnimator>().DefaultStatus.Hp;
             PlayerHPSlider.value = PlayerCurrentHp / PlayerMaxHp;
+            PlayerFireSlider.value = MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.ElementPoint[1]/ 100;
+            PlayerWindSlider.value = MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.ElementPoint[2] / 100;
+            PlayerWaterSlider.value = MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.ElementPoint[3] / 100;
+            if(MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.Element== 0)
+            {
+                BackFireSlider .SetActive(false);
+                BackWaterSlider.SetActive(false);
+                BackWindSlider .SetActive(false);
+            }
+            else if (MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.Element == 1)
+            {
+                BackFireSlider.SetActive(true);
+                BackWaterSlider.SetActive(false);
+                BackWindSlider.SetActive(false);
+            }
+            else if (MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.Element == 2)
+            {
+                BackFireSlider.SetActive(false);
+                BackWaterSlider.SetActive(false);
+                BackWindSlider.SetActive(true);
+            }
+            else if (MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.Element == 3)
+            {
+                BackFireSlider.SetActive(false);
+                BackWaterSlider.SetActive(true);
+                BackWindSlider.SetActive(false);
+            }
+
             int Lv = MinePlayer.GetComponent<PlyerAnimator>().CurrentStatus.Lv; 
             PlayerLevel.text = "Lv."+Lv;
             KillCount.text ="ŽŸ‚ÌƒŒƒxƒ‹‚Ü‚Å"+ MinePlayer.GetComponent<PlyerAnimator>().GetKillCount()+"/"+MinePlayer.GetComponent<PlyerAnimator>().GetLvUpCount();
@@ -119,5 +157,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
         DeadPanel.SetActive(true);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
+    }
+    public void ChangeElement()
+    {
+        MinePlayer.GetComponent<PlyerAnimator>().SelectElement();
     }
 }

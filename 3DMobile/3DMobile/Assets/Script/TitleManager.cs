@@ -13,13 +13,14 @@ public class TitleManager : MonoBehaviour
     [SerializeField] private GameObject Login;
     [SerializeField] private GameObject NewGame;
     [SerializeField] private GameObject LoadingPanel;
+    [SerializeField] private Toggle OfflineMode;
     public TMP_InputField inputField;
     public TextMeshProUGUI text;
     public GameObject NameCheck;
     public GameObject NameError;
     public static string PlayerName;
     public static bool LoadDataflg = false;
-
+    public static bool isOffline = false;
     void Start()
     {
         string SaveFilePath = Application.persistentDataPath + "/savedata.json";
@@ -43,6 +44,10 @@ public class TitleManager : MonoBehaviour
         NameError.SetActive(false);
 
         
+    }
+    void Update()
+    {
+        isOffline = OfflineMode.isOn;
     }
     public void LoginClicked()
     {
