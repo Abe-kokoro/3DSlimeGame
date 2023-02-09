@@ -2208,6 +2208,11 @@ MonoBehaviour:
     Hp: 200
     Power: 20
     Element: 0
+    ElementPoint:
+    - 0
+    - 0
+    - 0
+    - 0
   LvUpCount: 0
   EnemyKillCount: 0
   CurrentStatus:
@@ -2215,6 +2220,11 @@ MonoBehaviour:
     Hp: 10
     Power: 1
     Element: 0
+    ElementPoint:
+    - 0
+    - 0
+    - 0
+    - 0
   attackHit: {fileID: 648673739}
   jumpPower: 60
   isAttack: 0
@@ -2237,6 +2247,7 @@ MonoBehaviour:
   isRelax: 0
   isFight: 1
   isWeaponSwitching: 0
+  ElementCoolTime: 0
 --- !u!114 &559980791
 MonoBehaviour:
   m_ObjectHideFlags: 0

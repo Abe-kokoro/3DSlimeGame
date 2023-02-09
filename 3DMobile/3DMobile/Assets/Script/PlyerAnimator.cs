@@ -25,6 +25,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         public Vector3 Pos;
         public int LvUpCount;
         public int EXP;
+        public float[] ElementValue=new float[4];
     }
 
 
@@ -53,6 +54,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         // çUåÇóÕ.
         public int Power = 1;
         public int Element = 0;
+        public float[] ElementPoint = new float[4];
     }
     [System.Serializable]
     public class SlashEffect
@@ -121,6 +123,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
     public bool isRelax = false;
     public bool isFight = true;
     public bool isWeaponSwitching = false;
+    [SerializeField] float ElementCoolTime = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -158,7 +161,10 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
             //PlayerModel.AddComponent<AudioListener>();
             //Camera.main.GetComponent<AudioListener>().enabled = false;
         }
-        
+        if(!TitleManager.LoadDataflg)
+        {
+            this.transform.position = PlayerController.resPos;
+        }
     }
     void FixedUpdate()
     {
@@ -185,6 +191,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
                  GameController.Loaded = true;
                 LvUpCount = PlayerLoadData.LvUpCount;
                 EnemyKillCount = PlayerLoadData.EXP;
+                CurrentStatus.ElementPoint = PlayerLoadData.ElementValue; 
              }
         }
         
@@ -208,6 +215,10 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
             if (Input.GetMouseButtonDown(1))
             {
                 //AttackAction2();
+            }
+            if(Input.GetKeyDown("q"))
+            {
+                SelectElement();
             }
 
             if (Input.GetKeyDown("space")||JumpFlg)
@@ -319,6 +330,18 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
                 SavePlayerData();
             }
             
+        }
+        if(photonView.IsMine)
+        {
+            if(CurrentStatus.ElementPoint[CurrentStatus.Element]<= 0)
+            {
+                CurrentStatus.Element = 0;
+                CurrentStatus.ElementPoint[CurrentStatus.Element] = 0;
+            }
+            else
+            {
+                CurrentStatus.ElementPoint[CurrentStatus.Element] -= Time.deltaTime;
+            }
         }
     }
     // ---------------------------------------------------------------------
@@ -940,6 +963,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
             playerData.Pos = this.transform.position;
             playerData.Atk = CurrentStatus.Power;
             playerData.EXP = EnemyKillCount;
+            playerData.ElementValue = CurrentStatus.ElementPoint;
             string jsonstr = JsonUtility.ToJson(playerData);
 
             StreamWriter writer;
@@ -974,5 +998,37 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
             return null;
         }
         return Directory.CreateDirectory(path);
+    }
+    public void AddElement(int EnemyElement)
+    {
+        CurrentStatus.ElementPoint[EnemyElement] += 10;
+        if(CurrentStatus.ElementPoint[EnemyElement]>=100)
+        {
+            CurrentStatus.ElementPoint[EnemyElement] = 100;
+
+        }
+    }
+    public void SelectElement()
+    {
+
+        int el = CurrentStatus.Element;
+        for(int i=0;i<4; i++)
+        {
+
+            el++;
+            if(el>3)
+            {
+                CurrentStatus.Element = 0;
+                return;
+            }
+            if (CurrentStatus.ElementPoint[el] > 0)
+            {
+                CurrentStatus.Element = el;
+                return;
+            }
+        }
+        CurrentStatus.Element = 0;
+        return;
+                
     }
 }

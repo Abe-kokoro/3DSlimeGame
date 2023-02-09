@@ -37,6 +37,10 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject ExitTrueButton;
     [SerializeField] private GameObject Gamecontroller;
     [SerializeField] private PlayerController Pcontroller;
+    //PlayerSettings
+    [SerializeField] private Slider SensiX;
+    [SerializeField] private Slider SensiY;
+
     //GraphicSettings
     [SerializeField] private GameObject SaveSettingsPanel;
     [SerializeField] private Slider RenderScale;
@@ -262,6 +266,7 @@ public class Menu : MonoBehaviour
     }
     private void SettingSave()
     {
+        
         isGranpicChange = false;
         URPAsset.renderScale = (float)RenderScale.value / 100;
         URPAsset.supportsHDR = HDR.isOn;

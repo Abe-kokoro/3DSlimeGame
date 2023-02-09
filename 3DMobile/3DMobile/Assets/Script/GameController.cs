@@ -17,9 +17,11 @@ public class GameController : MonoBehaviourPunCallbacks
     [SerializeField] GameObject ChatPanel;
     [SerializeField] GameObject pController;
     public static bool Loaded = false;
+  
     // Start is called before the first frame update
     void Start()
     {
+        
         if (!TitleManager.LoadDataflg)
         {
             // プレイヤー自身の名前を"Player"に設定する
@@ -34,8 +36,20 @@ public class GameController : MonoBehaviourPunCallbacks
             Loaded = false;
         }
         //PhotonServerSettingsの設定内容を使って
+        if (TitleManager.isOffline)
+        {
+
+            PhotonNetwork.OfflineMode = true;
+            OnConnectedToMaster();
+        }
+        else
+        {
+
+            PhotonNetwork.OfflineMode = false;
+
+            PhotonNetwork.ConnectUsingSettings();
+        }
         //マスターサーバーへ接続する
-        PhotonNetwork.ConnectUsingSettings();
 
         if (isPC)
         {
@@ -120,6 +134,7 @@ public class GameController : MonoBehaviourPunCallbacks
     //マスターサーバーへの接続が成功した時に呼ばれるコールバック
     public override void OnConnectedToMaster()
     {
+       
         //指定の名前の部屋に参加する
         //なければ作成して参加する
         PhotonNetwork.JoinOrCreateRoom("RoomSlimeBattle",new RoomOptions(),TypedLobby.Default);
