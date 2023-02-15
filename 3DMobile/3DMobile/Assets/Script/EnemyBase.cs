@@ -11,6 +11,8 @@ using Photon.Pun.Demo.PunBasics;
 
 public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
 {
+    //public AudioClip hit;
+    //public AudioClip hit02;
 
     [SerializeField] float DespawneTime = 0.0f;
     [SerializeField, Range(1, 1000)]
@@ -78,6 +80,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] GameObject DmgText;
     [SerializeField] TextMeshPro EnemyLvText;
     [SerializeField] Transform EnemyCanvas;
+    AudioSource PlaySE;
     void Start()
     {
        // DefaultStatus.Lv = EnemyLv;
@@ -106,7 +109,7 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         //DmgText.SetActive(false);
         NextRotateCoolTime = UnityEngine.Random.Range(8, 16);
         TrasePlayer = null;
-
+        PlaySE = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -348,14 +351,20 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
             else if (dmgLevel == 1)
             {
                 animator.SetTrigger("isHit00");
+                AudioClip hit = (AudioClip)Resources.Load("slime01");
+                PlaySE.PlayOneShot(hit);
             }
             else if (dmgLevel == 2)
             {
                 animator.SetTrigger("isHit01");
+                AudioClip hit02 = (AudioClip)Resources.Load("slime02");
+
+                PlaySE.PlayOneShot(hit02);
             }
             else if (dmgLevel == 3)
             {
                 animator.SetTrigger("isHit02");
+                //PlaySE.PlayOneShot(hit02);
             }
         }
     }

@@ -28,7 +28,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         public float[] ElementValue=new float[4];
     }
 
-
+    AudioSource PlayerSE;
     [SerializeField] private string PlayerName;
     [SerializeField, Range(1, 100)]
     int PlayerLv;
@@ -132,6 +132,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
         attackHit.SetActive(false);
+        PlayerSE = GetComponent<AudioSource>();
         // FootSphereのイベント登録.
         
         footColliderCall.TriggerStayEvent.AddListener(OnFootTriggerStay);
@@ -451,6 +452,8 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
 
     void Attack2_Start()
     {
+        AudioClip swordslash = (AudioClip)Resources.Load("swordslash02");
+        PlayerSE.PlayOneShot(swordslash);
         UnityEngine.Debug.Log("Hit");
         // 攻撃判定用オブジェクトを表示.
         attackHit.SetActive(true);
@@ -483,6 +486,11 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
     }
     void AttackS6_Start()
     {
+        int r = UnityEngine.Random.Range(1, 8);
+        
+        AudioClip swordslash = (AudioClip)Resources.Load("Motion-Swish03-"+r);
+        PlayerSE.PlayOneShot(swordslash);
+
         ParticleSystem newParticle = null;
         switch ((AttackElement)CurrentStatus.Element)
         {
@@ -526,7 +534,7 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
     }
     void AttackS2_Start()
     {
-
+        
         if (isAttackChain)
         {
             UnityEngine.Debug.Log("Chain");
@@ -536,6 +544,11 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
     }
     void AttackS2_Effect()
     {
+        int r = UnityEngine.Random.Range(1, 8);
+
+        AudioClip swordslash = (AudioClip)Resources.Load("Motion-Swish03-" + r);
+        PlayerSE.PlayOneShot(swordslash);
+
         ParticleSystem newParticle = null;
         switch ((AttackElement)CurrentStatus.Element)
         {
@@ -572,7 +585,6 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
     }
     void AttackS5_Start()
     {
-        
         if (isAttackChain)
         {
             UnityEngine.Debug.Log("Chain");
@@ -582,6 +594,11 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
     }
     void AttackS5_Effect()
     {
+        int r = UnityEngine.Random.Range(1, 8);
+
+        AudioClip swordslash = (AudioClip)Resources.Load("Motion-Swish03-" + r);
+        PlayerSE.PlayOneShot(swordslash);
+
         ParticleSystem newParticle = null;
         switch ((AttackElement)CurrentStatus.Element)
         {
@@ -624,6 +641,11 @@ public class PlyerAnimator : MonoBehaviourPunCallbacks, IPunObservable
     }
     void AttackWS2_Effect()
     {
+        int r = UnityEngine.Random.Range(1, 8);
+
+        AudioClip swordslash = (AudioClip)Resources.Load("Motion-Swish03-" + r);
+        PlayerSE.PlayOneShot(swordslash);
+
         ParticleSystem newParticle = null;
         switch ((AttackElement)CurrentStatus.Element)
         {
