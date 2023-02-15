@@ -587,8 +587,9 @@ public class EnemyBase : MonoBehaviourPunCallbacks, IPunObservable
         CurrentStatus.Lv = DefaultStatus.Lv;
         EnemyLv = lv;
     }
-    private void RPCDestroy(GameObject DeadEnemy)
+    public void RPCDestroy(GameObject DeadEnemy)
     {
+        if(photonView.IsMine)
         PhotonNetwork.Destroy(DeadEnemy);
     }
 }
