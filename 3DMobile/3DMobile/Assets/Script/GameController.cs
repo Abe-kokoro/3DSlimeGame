@@ -86,8 +86,23 @@ public class GameController : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    menu.GetComponent<Menu>().Resume();
-
+                    //menu.GetComponent<Menu>().Resume();
+                    if(Menu.isSetting)
+                    {
+                        menu.GetComponent<Menu>().SettingsExit();
+                    }
+                    else if(Menu.isChat)
+                    {
+                        menu.GetComponent<Menu>().HintoMenuExit();
+                    }
+                    else if(Menu.isExit)
+                    {
+                        menu.GetComponent<Menu>().ExitMenuExit();
+                    }
+                    else
+                    {
+                        menu.GetComponent<Menu>().Resume();
+                    }
                     //    Cursor.lockState = CursorLockMode.Locked;
                     //    Cursor.visible = false;
                     //

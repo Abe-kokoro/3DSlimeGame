@@ -57,6 +57,11 @@ public class Menu : MonoBehaviour
 
     [SerializeField] bool PauseFlg = false;
     public static bool isMenu = false;
+    public static bool isChat = false;
+    public static bool isSetting = false;
+    public static bool isExit = false;
+    public static bool isMap = false;
+
     bool isButtonUp = false;
     UniversalRenderPipelineAsset URPAsset;
     
@@ -120,7 +125,13 @@ public class Menu : MonoBehaviour
         {
             Antialiasing.value = 3;
         }
-        Shadow.value=(int)QualitySettings.shadows;       
+        Shadow.value=(int)QualitySettings.shadows;
+        PauseFlg = false;
+        isMenu = false;
+        isChat = false;
+        isSetting = false;
+        isExit = false;
+        isMap = false;
     }
     void Update()
     {
@@ -200,13 +211,15 @@ public class Menu : MonoBehaviour
         }
        
     }
-    private void ExitMenu()
+    public void ExitMenu()
     {
+        isExit = true;
         ExitPanel.SetActive(true);
         pausePanel.SetActive(false);
     }
-    private void ExitMenuExit()
+    public void ExitMenuExit()
     {
+        isExit = false; 
         ExitPanel.SetActive(false);
         pausePanel.SetActive(true);
     }
@@ -220,31 +233,35 @@ public class Menu : MonoBehaviour
 #endif
     }
 
-    private void SettingsMenu()
+    public void SettingsMenu()
     {
+        isSetting = false;
         SettingSlider.value = 1.0f;
         SettingPanel.SetActive(true);
         pausePanel.SetActive(false);
     }
-    private void SettingsExit()
+    public void SettingsExit()
     {
+        isSetting = false;
         SettingSlider.value = 1.0f;
         mouseScroll = 1.0f;
         SettingPanel.SetActive(false);
         pausePanel.SetActive(true);
     }
-    private void HintoMenu()
+    public void HintoMenu()
     {
+        isChat = true;
         pausePanel.SetActive(false);
         ChatPanel.SetActive(true);
     }
-    private void HintoMenuExit()
+    public void HintoMenuExit()
     {
+        isChat = false;
         pausePanel.SetActive(true);
         ChatPanel.SetActive(false);
     }
 
-    private void MapView()
+    public void MapView()
     {
         Pcontroller.MinePlayer.GetComponent<PlyerAnimator>().SavePlayerData();
     }
